@@ -15,7 +15,7 @@ export const Appbar = () => {
         <img
           className='app-logo'
           src='/assets/favicons/favicon.png'
-          alt='디블'
+          alt={mySite.name}
           width={28}
           height='auto'
           css={{ [MQ[2]]: { width: '24px' } }}

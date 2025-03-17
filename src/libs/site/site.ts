@@ -9,6 +9,7 @@ export const mySite = {
   description:
     '디블에이전시에서 웹디자인 및 개발까지! 우리는 일회성 작업이 아닌 지속적인 관계를 추구하고 있으며 디자인의 중요성을 누구보다 높게 평가하고 있는 웹디자인 및 개발 에이전시 팀이에요!',
   keywords: [
+    '디블 에이전시',
     '디블에이전시',
     'dbleui',
     'dbleagency',
@@ -148,10 +149,10 @@ export const siteOrganization = {
 export const siteWebSite = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
-  name: mySite.name, // "디블에이전시"
+  name: mySite.name,
   url: mySite.url,
   // alternateName는 너무 많지 않게 최소화
-  alternateName: ['디블 에이전시'],
+  alternateName: mySite.keywords.slice(0, 3),
   description: mySite.description,
   inLanguage: 'ko',
   keywords: mySite.keywords.join(', '),
@@ -179,8 +180,8 @@ export const siteWebPage = {
 export const sitePerson = {
   '@context': 'https://schema.org',
   '@type': 'Person',
-  name: '정재환',
-  jobTitle: '대표이사',
+  name: mySite.founderInfo.name,
+  jobTitle: mySite.founderInfo.jobTitle,
   telephone: mySite.founderInfo.tel,
   image: mySite.founderInfo.image,
   description: mySite.founderInfo.description,

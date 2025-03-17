@@ -35,7 +35,7 @@ const MyDocument = ({ breadcrumbList, locale }: MyDocumentProps) => {
         <link rel='alternate' href={mySite.url} hrefLang='ko_KR' />
 
         {/* open graph 정보 */}
-        <meta property='og:site_name' content={siteName ?? '디블에이전시'} />
+        <meta property='og:site_name' content={siteName} />
         <meta property='og:type' content='website' />
         <meta property='og:locale' content='ko_KR' />
         <meta property='og:url' content={mySite.url} />
