@@ -113,17 +113,16 @@ export const mySite = {
   },
 };
 
-// 조직 정보
+// 1) Organization
 export const siteOrganization = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
-  name: mySite.name,
+  name: mySite.name, // "디블에이전시"
   url: mySite.url,
   logo: mySite.logoUrl,
   description: mySite.description,
   sameAs: mySite.sameAs,
   foundingDate: mySite.companyInfo.foundingDate,
-  founder: mySite.founderInfo.name,
   areaServed: 'KR',
   address: {
     '@type': 'PostalAddress',
@@ -145,46 +144,14 @@ export const siteOrganization = {
   ],
 };
 
-// 페이지 정보
-export const siteWebPage = {
-  '@context': 'https://schema.org',
-  '@type': 'WebPage',
-  name: mySite.title,
-  description: mySite.description,
-  keywords: mySite.keywords.join(', '),
-  url: mySite.url,
-  image: mySite.imageUrl,
-  author: {
-    '@type': 'Person',
-    name: mySite.author,
-  },
-  datePublished: new Date().toISOString(),
-  dateModified: new Date().toISOString(),
-  publisher: {
-    '@type': 'Organization',
-    name: mySite.name,
-    logo: {
-      '@type': 'ImageObject',
-      url: mySite.logoUrl,
-    },
-  },
-  headline: mySite.title,
-  mainEntityOfPage: {
-    '@type': 'WebPage',
-    '@id': mySite.url,
-  },
-  articleSection: mySite.title,
-  articleBody: mySite.description,
-  thumbnailUrl: mySite.imageUrl,
-};
-
-// 사이트 정보
+// 2) WebSite
 export const siteWebSite = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
-  name: mySite.name,
+  name: mySite.name, // "디블에이전시"
   url: mySite.url,
-  alternateName: [mySite.title, mySite.name, 'Dble', 'Dble Agency'],
+  // alternateName는 너무 많지 않게 최소화
+  alternateName: ['디블 에이전시'],
   description: mySite.description,
   inLanguage: 'ko',
   keywords: mySite.keywords.join(', '),
@@ -193,47 +160,34 @@ export const siteWebSite = {
     target: `${mySite.url}/search?q={search_term_string}`,
     'query-input': 'required name=search_term_string',
   },
-  mainEntity: menus.map(menu => ({
-    '@type': 'SiteNavigationElement',
-    name: menu.name,
-    url: `${mySite.url}${menu.url}`,
-  })),
 };
 
-// 창립자 정보
+// ========== (선택) 필요 시 주석 처리 ==========
+// 3) WebPage (단순화 or 제거)
+export const siteWebPage = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: mySite.title,
+  description: mySite.description,
+  keywords: mySite.keywords.join(', '),
+  url: mySite.url,
+  image: mySite.imageUrl,
+  author: { '@type': 'Person', name: mySite.author },
+};
+
+// 4) Person (대표자 정보)
 export const sitePerson = {
   '@context': 'https://schema.org',
   '@type': 'Person',
-  name: mySite.founderInfo.name,
-  jobTitle: mySite.founderInfo.jobTitle,
-  email: mySite.founderInfo.email,
+  name: '정재환',
+  jobTitle: '대표이사',
   telephone: mySite.founderInfo.tel,
   image: mySite.founderInfo.image,
   description: mySite.founderInfo.description,
   sameAs: mySite.founderInfo.sameAs,
-  worksFor: {
-    '@type': 'Organization',
-    name: mySite.name,
-    legalName: mySite.companyInfo.legalName,
-    taxID: mySite.companyInfo.taxID,
-  },
-  url: mySite.url,
-  address: {
-    '@type': 'PostalAddress',
-    streetAddress: mySite.address.streetAddress,
-    addressLocality: mySite.address.addressLocality,
-    addressRegion: mySite.address.addressRegion,
-    postalCode: mySite.address.postalCode,
-    addressCountry: mySite.address.addressCountry,
-  },
-  alumniOf: mySite.founderInfo.alumniOf.map(my => ({
-    '@type': 'EducationalOrganization',
-    name: my.name,
-    department: my.department,
-  })),
 };
 
-// 사이트 네비게이션
+// 5) SiteNavigation (메뉴 구조)
 export const siteNavigation = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
