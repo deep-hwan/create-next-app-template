@@ -100,7 +100,7 @@ const MyDocument = ({ breadcrumbList, locale }: MyDocumentProps) => {
           }}
         />
 
-        {/*피이지 정보 */}
+        {/*페이지 정보 */}
         <Script
           type='application/ld+json'
           dangerouslySetInnerHTML={{
