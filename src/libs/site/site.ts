@@ -45,7 +45,7 @@ export const mySite = {
     '홈페이지제작',
     '어플리케이션',
   ],
-  imageUrl: `${siteUrl}/assets/images/dble-banner.png`,
+  imageUrl: `${siteUrl}/assets/images/dble-banner.png`, // 1200x630
   logoUrl: `${siteUrl}/assets/favicons/logo.png`,
   author: 'dble',
   sameAs: [
@@ -80,7 +80,7 @@ export const mySite = {
     name: '정재환',
     jobTitle: '대표이사',
     email: 'deep@deepcomu.com',
-    tel: '+82-01-8773-7561', // 실제 연락처로 수정 필요
+    tel: '+82-01-1234-5678', // 실제 연락처로 수정 필요
     image: ``, // 대표 프로필 이미지
     sameAs: [
       'https://pinterest.com/dble_ui/_created',
@@ -143,6 +143,39 @@ export const siteOrganization = {
       availableLanguage: mySite.contactPoint.availableLanguage,
     },
   ],
+};
+
+// 페이지 정보
+export const siteWebPage = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: mySite.title,
+  description: mySite.description,
+  keywords: mySite.keywords.join(', '),
+  url: mySite.url,
+  image: mySite.imageUrl,
+  author: {
+    '@type': 'Person',
+    name: mySite.author,
+  },
+  datePublished: new Date().toISOString(),
+  dateModified: new Date().toISOString(),
+  publisher: {
+    '@type': 'Organization',
+    name: mySite.name,
+    logo: {
+      '@type': 'ImageObject',
+      url: mySite.logoUrl,
+    },
+  },
+  headline: mySite.title,
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': mySite.url,
+  },
+  articleSection: mySite.title,
+  articleBody: mySite.description,
+  thumbnailUrl: mySite.imageUrl,
 };
 
 // 사이트 정보

@@ -5,7 +5,6 @@ import { mySite } from './site';
 interface SeoHeadProps {
   title?: string;
   description?: string;
-  keywords?: string[];
   author?: string;
   url?: string;
   imageUrl?: string;
@@ -14,7 +13,6 @@ interface SeoHeadProps {
 export default function SEOHead({
   title = mySite.title,
   description = mySite.description,
-  keywords = mySite.keywords,
   author = mySite.author,
   url,
   imageUrl = mySite.imageUrl,
@@ -30,7 +28,6 @@ export default function SEOHead({
       {/* 기본 메타 태그 */}
       <title>{title}</title>
       <meta name='description' content={description} />
-      <meta name='keywords' content={keywords.join(', ')} />
       <meta name='generator' content='Next.js' />
       <meta name='creator' content={author} />
       <meta name='publisher' content={author} />
@@ -38,17 +35,9 @@ export default function SEOHead({
       <meta name='color-scheme' content='light' />
       <link rel='author' href={url ?? thisUrl} />
 
-      {/* Canonical URL */}
-      <link rel='canonical' href={url ?? thisUrl} />
-
       {/* Open Graph */}
       <meta property='og:title' content={title} />
       <meta property='og:description' content={description} />
-      <meta property='og:image' content={imageUrl} />
-      <meta property='og:image:width' content='1200' />
-      <meta property='og:image:height' content='630' />
-      <meta property='og:image:alt' content={title} />
-      <meta property='og:url' content={url ?? thisUrl} />
 
       {/* <meta property='og:video' content='https://nextjs.org/video.mp4' />
       <meta property='og:video:width' content='800' />

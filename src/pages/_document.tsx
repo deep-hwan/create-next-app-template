@@ -1,4 +1,4 @@
-import { mySite, siteNavigation, siteOrganization, sitePerson, siteWebSite } from '@/libs/site/site';
+import { mySite, siteNavigation, siteOrganization, sitePerson, siteWebPage, siteWebSite } from '@/libs/site/site';
 
 import Document, { DocumentContext, DocumentInitialProps, Head, Html, Main, NextScript } from 'next/document';
 import Script from 'next/script';
@@ -23,22 +23,38 @@ const MyDocument = ({ breadcrumbList, locale }: MyDocumentProps) => {
         <meta charSet='utf-8' />
         <meta name='robots' content='index, follow' />
 
-        {/* 사이트 정보 */}
+        {/* 기본 메타 태그 */}
         <meta name='application-name' content={mySite.name} />
-        <meta property='og:site_name' content={mySite.name} />
-        <meta property='og:type' content='website' />
-        <meta property='og:locale' content='ko_KR' />
-        <link itemProp='url' href={mySite.url} />
+        <meta name='keywords' content={mySite.keywords.join(', ')} />
         <meta itemProp='name' content={mySite.name} />
         <meta itemProp='alternateName' content={mySite.title} />
 
-        <link rel='shortcut icon' href='/favicon.ico' />
-        <link rel='alternate' type='application/rss+xml' title={mySite.name + ' RSS Feed'} href='/api/rss' />
+        {/* 페이지 표준정보 */}
+        <link itemProp='url' href={mySite.url} />
+        <link rel='canonical' href={mySite.url} />
+        <link rel='alternate' href={mySite.url} hrefLang='ko_KR' />
 
-        <Script
-          strategy='afterInteractive'
-          src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ?? ''}`}
-        />
+        {/* open graph 정보 */}
+        <meta property='og:site_name' content={mySite.name} />
+        <meta property='og:type' content='website' />
+        <meta property='og:locale' content='ko_KR' />
+        <meta property='og:url' content={mySite.url} />
+        <meta property='og:image' content={mySite.imageUrl} />
+        <meta property='og:image:alt' content={mySite.title} />
+        <meta property='og:image:width' content='1200' />
+        <meta property='og:image:height' content='630' />
+        <meta property='og:image:type' content='image/png' />
+
+        {/* article 정보 */}
+        <meta property='article:published_time' content={new Date().toISOString()} />
+        <meta property='article:modified_time' content={new Date().toISOString()} />
+        <meta property='article:author' content={mySite.author} />
+
+        {/* 아이콘 정보 */}
+        <link rel='shortcut icon' href='/favicon.ico' />
+
+        {/* rss 피드 정보 */}
+        <link rel='alternate' type='application/rss+xml' title={mySite.name + ' RSS Feed'} href='/api/rss' />
 
         {/* PWA 셋팅 */}
         {/* <SplashScreens />
@@ -71,11 +87,24 @@ const MyDocument = ({ breadcrumbList, locale }: MyDocumentProps) => {
           />
         )}
 
+        <Script
+          strategy='afterInteractive'
+          src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ?? ''}`}
+        />
+
         {/* 조직 정보 */}
         <Script
           type='application/ld+json'
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(siteOrganization),
+          }}
+        />
+
+        {/*피이지 정보 */}
+        <Script
+          type='application/ld+json'
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(siteWebPage),
           }}
         />
 
