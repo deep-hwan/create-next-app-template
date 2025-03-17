@@ -15,7 +15,7 @@ interface MyDocumentProps extends DocumentInitialProps {
 }
 
 const MyDocument = ({ breadcrumbList, locale }: MyDocumentProps) => {
-  console.log(breadcrumbList);
+  const siteName = mySite.name ?? '디블에이전시';
 
   return (
     <Html lang={'ko'}>
@@ -24,9 +24,9 @@ const MyDocument = ({ breadcrumbList, locale }: MyDocumentProps) => {
         <meta name='robots' content='index, follow' />
 
         {/* 기본 메타 태그 */}
-        <meta name='application-name' content={mySite.name} />
+        <meta name='application-name' content={siteName} />
         <meta name='keywords' content={mySite.keywords.join(', ')} />
-        <meta itemProp='name' content={mySite.name} />
+        <meta itemProp='name' content={siteName} />
         <meta itemProp='alternateName' content={mySite.title} />
 
         {/* 페이지 표준정보 */}
@@ -35,7 +35,7 @@ const MyDocument = ({ breadcrumbList, locale }: MyDocumentProps) => {
         <link rel='alternate' href={mySite.url} hrefLang='ko_KR' />
 
         {/* open graph 정보 */}
-        <meta property='og:site_name' content={mySite.name ?? '디블에이전시'} />
+        <meta property='og:site_name' content={siteName ?? '디블에이전시'} />
         <meta property='og:type' content='website' />
         <meta property='og:locale' content='ko_KR' />
         <meta property='og:url' content={mySite.url} />
@@ -54,7 +54,7 @@ const MyDocument = ({ breadcrumbList, locale }: MyDocumentProps) => {
         <link rel='shortcut icon' href='/favicon.ico' />
 
         {/* rss 피드 정보 */}
-        <link rel='alternate' type='application/rss+xml' title={mySite.name + ' RSS Feed'} href='/api/rss' />
+        <link rel='alternate' type='application/rss+xml' title={siteName + ' RSS Feed'} href='/api/rss' />
 
         {/* PWA 셋팅 */}
         {/* <SplashScreens />
@@ -63,7 +63,7 @@ const MyDocument = ({ breadcrumbList, locale }: MyDocumentProps) => {
         <meta name='mobile-web-app-capable' content='yes' />
         <meta name='apple-mobile-web-app-capable' content='yes' />
         <meta name='apple-mobile-web-app-status-bar-style' content='default' />
-        <meta name='apple-mobile-web-app-title' content={mySite.name} />
+        <meta name='apple-mobile-web-app-title' content={siteName} />
         <meta name='format-detection' content='telephone=no' />
         <meta name='msapplication-TileColor' content='#ffffff' />
         <meta name='msapplication-tap-highlight' content='no' />
