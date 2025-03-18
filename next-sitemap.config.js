@@ -1,6 +1,5 @@
 /** @type {import('next-sitemap').IConfig} */
 
-// 예제
 const siteUrl = 'https://dbleagency.com';
 
 const menuItems = [
@@ -14,6 +13,13 @@ const additionalPaths = menuItems.map(item => ({
   loc: item.url,
   changefreq: 'daily',
   priority: item.url === '/' ? 1.0 : 0.8,
+  // hreflang 정보 추가
+  alternateRefs: [
+    {
+      href: `${siteUrl}${item.url}`,
+      hreflang: 'x-default',
+    },
+  ],
 }));
 
 const sitemapConfig = {
@@ -26,11 +32,18 @@ const sitemapConfig = {
   outDir: './public',
   priority: 0.7,
   trailingSlash: false, //  true 시 항상 URL 끝에 / 붙임s
+  alternateRefs: [
+    {
+      href: siteUrl,
+      hreflang: 'x-default',
+    },
+  ],
   robotsTxtOptions: {
     policies: [
       {
         userAgent: '*',
         allow: '/',
+        disallow: ['/404', '/observer/jj', '/observer/ok'],
       },
     ],
     // additionalSitemaps: [`${siteUrl}/sitemap-0.xml`],

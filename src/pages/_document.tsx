@@ -32,7 +32,7 @@ const MyDocument = ({ breadcrumbList, locale }: MyDocumentProps) => {
         {/* 페이지 표준정보 */}
         <link itemProp='url' href={mySite.url} />
         <link rel='canonical' href={mySite.url} />
-        <link rel='alternate' href={mySite.url} hrefLang='ko_KR' />
+        <link rel='alternate' href={mySite.url} hrefLang='x-default' />
 
         {/* open graph 정보 */}
         <meta property='og:site_name' content={siteName} />
@@ -69,23 +69,23 @@ const MyDocument = ({ breadcrumbList, locale }: MyDocumentProps) => {
         <meta name='msapplication-tap-highlight' content='no' />
 
         {/* 메뉴 목록 */}
-        {breadcrumbList && (
-          <Script
-            type='application/ld+json'
-            dangerouslySetInnerHTML={{
-              __html: JSON.stringify({
-                '@context': 'https://schema.org',
-                '@type': 'BreadcrumbList',
-                itemListElement: breadcrumbList.map((breadcrumb: Breadcrumb) => ({
-                  '@type': 'ListItem',
-                  position: breadcrumb.position,
-                  name: breadcrumb.name,
-                  item: breadcrumb.url,
-                })),
-              }),
-            }}
-          />
-        )}
+
+        <Script
+          type='application/ld+json'
+          strategy='beforeInteractive'
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'BreadcrumbList',
+              itemListElement: breadcrumbList?.map((breadcrumb: Breadcrumb) => ({
+                '@type': 'ListItem',
+                position: breadcrumb.position,
+                name: breadcrumb.name,
+                item: breadcrumb.url,
+              })),
+            }),
+          }}
+        />
 
         <Script
           strategy='afterInteractive'
@@ -95,22 +95,16 @@ const MyDocument = ({ breadcrumbList, locale }: MyDocumentProps) => {
         {/* 조직 정보 */}
         <Script
           type='application/ld+json'
+          strategy='beforeInteractive'
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(siteOrganization),
-          }}
-        />
-
-        {/*페이지 정보 */}
-        <Script
-          type='application/ld+json'
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(siteWebPage),
           }}
         />
 
         {/* 사이트 정보 */}
         <Script
           type='application/ld+json'
+          strategy='beforeInteractive'
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(siteWebSite),
           }}
@@ -119,14 +113,25 @@ const MyDocument = ({ breadcrumbList, locale }: MyDocumentProps) => {
         {/* 창립자 정보 */}
         <Script
           type='application/ld+json'
+          strategy='beforeInteractive'
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(sitePerson),
           }}
         />
 
-        {/* 창립자 정보 */}
+        {/*페이지 정보 */}
         <Script
           type='application/ld+json'
+          strategy='beforeInteractive'
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(siteWebPage),
+          }}
+        />
+
+        {/* 사이트 메뉴 정보 */}
+        <Script
+          type='application/ld+json'
+          strategy='beforeInteractive'
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(siteNavigation),
           }}

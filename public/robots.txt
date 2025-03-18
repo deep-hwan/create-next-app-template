@@ -1,6 +1,9 @@
 # *
 User-agent: *
 Allow: /
+Disallow: /404
+Disallow: /observer/jj
+Disallow: /observer/ok
 
 # Host
 Host: https://dbleagency.com
