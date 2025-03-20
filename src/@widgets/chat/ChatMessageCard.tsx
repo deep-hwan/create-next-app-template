@@ -2,7 +2,7 @@ import Avatar from '@/@widgets/image/Avatar';
 import Image from '@/@widgets/image/Image';
 import { useMoment } from '@/libs/hooks';
 import { colors } from '@/libs/themes';
-import { Background, Flex, Padding, Text } from 'dble-layout';
+import { Background, Flex, Padding, Text } from '@/@dble_layout';
 
 const ChatMessageCard = ({
   isSender,

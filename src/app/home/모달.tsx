@@ -1,6 +1,6 @@
+import { Background, Flex, Padding, Skeleton, Text, TouchableOpacity } from '@/@dble_layout';
 import Dialog from '@/@widgets/modal/Dialog';
 import { Modal } from '@/@widgets/modal/Modal';
-import { Background, Flex, Padding, Skeleton, Text, TouchableOpacity } from 'dble-layout';
 import { useState } from 'react';
 import WidgetContainer from './_WidgetContainer';
 

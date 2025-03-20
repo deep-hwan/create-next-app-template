@@ -1,7 +1,7 @@
+import { Flex, Padding, Spacing } from '@/@dble_layout';
 import { ChatEditor } from '@/@widgets/chat/ChatEditor';
 import ChatMessageCard from '@/@widgets/chat/ChatMessageCard';
 import { useUid } from '@/libs/hooks';
-import { Flex, Padding, Spacing } from 'dble-layout';
 import { useRef, useState } from 'react';
 import WidgetContainer from './_WidgetContainer';
 

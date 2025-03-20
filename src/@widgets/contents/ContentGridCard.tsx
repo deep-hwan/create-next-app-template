@@ -1,6 +1,6 @@
+import { Flex, Padding, Spacing, Text, TouchableOpacity } from '@/@dble_layout';
 import { CardContainer } from '@/@widgets/card/CardContainer';
 import Image from '@/@widgets/image/Image';
-import { Flex, Padding, Spacing, Text, TouchableOpacity } from 'dble-layout';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 

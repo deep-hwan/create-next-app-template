@@ -1,4 +1,4 @@
-import { Flex, TouchableOpacity } from 'dble-layout';
+import { Flex, TouchableOpacity } from '@/@dble_layout';
 
 type Types = {
   iconSize?: number;

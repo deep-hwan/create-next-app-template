@@ -1,5 +1,5 @@
+import { Flex, Padding, Text } from '@/@dble_layout';
 import { LoadingSpinner } from '@/@widgets/loading/LoadingSpinner';
-import { Flex, Padding, Text } from 'dble-layout';
 import WidgetContainer from './_WidgetContainer';
 
 export const 로딩 = () => {

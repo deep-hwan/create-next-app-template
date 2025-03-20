@@ -1,5 +1,5 @@
+import { Flex, Text, TouchableOpacity } from '@/@dble_layout';
 import { colors } from '@/libs/themes';
-import { Flex, Text, TouchableOpacity } from 'dble-layout';
 import React from 'react';
 
 interface Props {

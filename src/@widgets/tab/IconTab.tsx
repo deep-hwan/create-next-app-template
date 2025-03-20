@@ -1,5 +1,5 @@
+import { Flex, TouchableOpacity } from '@/@dble_layout';
 import { css } from '@emotion/react';
-import { Flex, TouchableOpacity } from 'dble-layout';
 
 interface IconTabProps {
   icon: React.ReactNode;

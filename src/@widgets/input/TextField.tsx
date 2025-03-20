@@ -1,8 +1,8 @@
+import { Background, Flex, Padding, Text, TouchableOpacity } from '@/@dble_layout';
 import { useUid } from '@/libs/hooks';
 import { fontSize } from '@/libs/themes';
 import { scrollToNextRef } from '@/libs/utils/scrollToRef';
 import { CSSObject } from '@emotion/react';
-import { Background, Flex, Padding, Text, TouchableOpacity } from 'dble-layout';
 import { InputHTMLAttributes, forwardRef, memo, useCallback, useEffect, useRef, useState } from 'react';
 
 interface Props

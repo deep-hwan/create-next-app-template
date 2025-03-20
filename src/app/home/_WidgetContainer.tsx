@@ -1,6 +1,6 @@
+import { Flex, Padding, Text } from '@/@dble_layout';
 import { CardContainer } from '@/@widgets/card/CardContainer';
 import { MotionDiv } from '@/@widgets/motion/MotionDiv';
-import { Flex, Padding, Text } from 'dble-layout';
 import dynamic from 'next/dynamic';
 import React, { forwardRef, useRef } from 'react';
 

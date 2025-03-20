@@ -1,7 +1,7 @@
+import { Background, Flex, Padding, TouchableOpacity } from '@/@dble_layout';
 import { useUid } from '@/libs/hooks';
 import { colors } from '@/libs/themes';
 import { scrollToNextRef } from '@/libs/utils/scrollToRef';
-import { Background, Flex, Padding, TouchableOpacity } from 'dble-layout';
 import React, { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 
 interface Types extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {

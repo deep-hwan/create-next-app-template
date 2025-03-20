@@ -1,5 +1,5 @@
+import { Background, Flex, Padding, Spacing, Text } from '@/@dble_layout';
 import { css, keyframes } from '@emotion/react';
-import { Background, Flex, Padding, Spacing, Text } from 'dble-layout';
 import { useRef } from 'react';
 import WidgetContainer from './_WidgetContainer';
 

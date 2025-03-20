@@ -1,4 +1,4 @@
-import { Skeleton } from 'dble-layout';
+import { Skeleton } from '@/@dble_layout';
 import React, { HTMLAttributes, SVGProps, useEffect, useRef, useState } from 'react';
 import ImageInstance from './Image';
 import { PopupAvatarWrapper } from './instances/PopupAvatarWrapper';

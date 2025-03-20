@@ -1,9 +1,9 @@
 /** @jsxImportSource @emotion/react */
+import { LoadingSpinner } from '@/@dble_layout';
+import { colors } from '@/libs/themes';
 import { Interpolation, Theme } from '@emotion/react';
 import dynamic from 'next/dynamic';
 import React from 'react';
-import { colors } from '@/libs/themes';
-import { LoadingSpinner } from 'dble-layout';
 
 interface PaginationProps {
   activePage: number;

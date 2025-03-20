@@ -1,7 +1,7 @@
+import { Flex, Padding } from '@/@dble_layout';
 import Calendar from '@/@widgets/calendar/Calendar';
 import { useMoment } from '@/libs/hooks';
 import { scrollToNextRef } from '@/libs/utils/scrollToRef';
-import { Flex, Padding } from 'dble-layout';
 import { useRef, useState } from 'react';
 import WidgetContainer from './_WidgetContainer';
 

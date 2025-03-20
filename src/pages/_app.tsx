@@ -1,8 +1,10 @@
+import createEmotionCache from '@/libs/utils/createEmotionCache';
 import { useOpenWebBrowser } from '@/libs/hooks';
 import { useScrollRestoration } from '@/libs/hooks/useScrollRestoration';
 import AppProvider from '@/libs/provider/AppProvider';
 import JengaProvider from '@/libs/provider/JengaProvider';
 import GlobalStyles from '@/libs/themes/globalStyles';
+import { CacheProvider, EmotionCache } from '@emotion/react';
 import { HydrationBoundary, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
@@ -10,7 +12,14 @@ import Head from 'next/head';
 import { useState } from 'react';
 import { RecoilRoot } from 'recoil';
 
-export default function MyApp({ Component, pageProps, router }: AppProps) {
+// 클라이언트 사이드 캐시 생성
+const clientSideEmotionCache = createEmotionCache();
+
+interface MyAppProps extends AppProps {
+  emotionCache?: EmotionCache;
+}
+
+export default function MyApp({ Component, pageProps, router, emotionCache = clientSideEmotionCache }: MyAppProps) {
   useScrollRestoration(router);
   useOpenWebBrowser();
 
@@ -33,7 +42,9 @@ export default function MyApp({ Component, pageProps, router }: AppProps) {
             <RecoilRoot>
               <JengaProvider>
                 <AppProvider>
-                  <Component {...pageProps} />
+                  <CacheProvider value={emotionCache}>
+                    <Component {...pageProps} />
+                  </CacheProvider>
                 </AppProvider>
               </JengaProvider>
             </RecoilRoot>

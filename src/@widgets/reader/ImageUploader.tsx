@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { LoadingSpinner } from 'dble-layout';
+import { LoadingSpinner } from '@/@dble_layout';
 import React, { ChangeEvent, ReactNode, useRef } from 'react';
 
 interface Props {

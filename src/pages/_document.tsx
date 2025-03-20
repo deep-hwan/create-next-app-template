@@ -1,4 +1,6 @@
 import { mySite, siteNavigation, siteOrganization, sitePerson, siteWebPage, siteWebSite } from '@/libs/site/site';
+import createEmotionCache from '@/libs/utils/createEmotionCache';
+import createEmotionServer from '@emotion/server/create-instance';
 
 import Document, { DocumentContext, DocumentInitialProps, Head, Html, Main, NextScript } from 'next/document';
 import Script from 'next/script';
@@ -12,9 +14,10 @@ type Breadcrumb = {
 interface MyDocumentProps extends DocumentInitialProps {
   breadcrumbList: Breadcrumb[] | null;
   locale: string;
+  emotionStyles: JSX.Element[];
 }
 
-const MyDocument = ({ breadcrumbList, locale }: MyDocumentProps) => {
+const MyDocument = ({ breadcrumbList, locale, emotionStyles }: MyDocumentProps) => {
   const siteName = mySite.name ?? '디블에이전시';
 
   return (
@@ -136,6 +139,8 @@ const MyDocument = ({ breadcrumbList, locale }: MyDocumentProps) => {
             __html: JSON.stringify(siteNavigation),
           }}
         />
+
+        {emotionStyles}
       </Head>
       <body>
         <noscript>
@@ -156,6 +161,28 @@ const MyDocument = ({ breadcrumbList, locale }: MyDocumentProps) => {
 
 MyDocument.getInitialProps = async (ctx: DocumentContext): Promise<MyDocumentProps> => {
   const initialProps = await Document.getInitialProps(ctx);
+  const emotionCache = createEmotionCache();
+  const { extractCriticalToChunks } = createEmotionServer(emotionCache);
+
+  // SSR에서 앱을 렌더링합니다
+  const originalRenderPage = ctx.renderPage;
+
+  ctx.renderPage = () =>
+    originalRenderPage({
+      enhanceApp: (App: any) => props => {
+        return <App emotionCache={emotionCache} {...props} />;
+      },
+    });
+
+  // 스타일 추출
+  const emotionStyles = extractCriticalToChunks(initialProps.html).styles.map(style => (
+    <style
+      data-emotion={`${style.key} ${style.ids.join(' ')}`}
+      key={style.key}
+      // eslint-disable-next-line react/no-danger
+      dangerouslySetInnerHTML={{ __html: style.css }}
+    />
+  ));
 
   // Define breadcrumb list
   const breadcrumbs: { [key: string]: Breadcrumb[] } = {
@@ -169,6 +196,7 @@ MyDocument.getInitialProps = async (ctx: DocumentContext): Promise<MyDocumentPro
     ...initialProps,
     breadcrumbList,
     locale: ctx.locale ?? 'ko',
+    emotionStyles,
   };
 };
 

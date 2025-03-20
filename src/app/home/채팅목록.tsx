@@ -1,6 +1,6 @@
+import { Flex, Spacing } from '@/@dble_layout';
 import { ChatRoomCard } from '@/@widgets/chat/ChatRoomCard';
 import Pagination from '@/@widgets/switch/Pagination';
-import { Flex, Spacing } from 'dble-layout';
 import { memo, useCallback, useRef, useState } from 'react';
 import WidgetContainer from './_WidgetContainer';
 

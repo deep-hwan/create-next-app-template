@@ -1,5 +1,5 @@
+import { Padding } from '@/@dble_layout';
 import { OAuthTabs } from '@/@widgets/tab/OAuthTabs';
-import { Padding } from 'dble-layout';
 import WidgetContainer from './_WidgetContainer';
 
 export const 간편로그인 = () => {

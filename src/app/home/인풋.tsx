@@ -1,5 +1,5 @@
+import { Button, Flex, Padding, Spacing } from '@/@dble_layout';
 import { TextField } from '@/@widgets/input/TextField';
-import { Button, Flex, Padding, Spacing } from 'dble-layout';
 import { useState } from 'react';
 import WidgetContainer from './_WidgetContainer';
 

@@ -1,8 +1,8 @@
 import Image from '@/@widgets/image/Image';
 
+import { Background, Button, Flex, Padding, Spacing, Text, TouchableOpacity } from '@/@dble_layout';
 import { IconTab } from '@/@widgets/tab/IconTab';
 import { useJenga } from '@/libs/provider/JengaProvider';
-import { Background, Button, Flex, Padding, Spacing, Text, TouchableOpacity } from 'dble-layout';
 import { useState } from 'react';
 import WidgetContainer from './_WidgetContainer';
 

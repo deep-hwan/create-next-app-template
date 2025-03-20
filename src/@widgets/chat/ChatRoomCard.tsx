@@ -1,5 +1,5 @@
+import { Flex, Padding, Position, Skeleton, Text, TouchableOpacity } from '@/@dble_layout';
 import Avatar from '@/@widgets/image/Avatar';
-import { Flex, Padding, Position, Skeleton, Text, TouchableOpacity } from 'dble-layout';
 import React, { memo } from 'react';
 
 type Type = {

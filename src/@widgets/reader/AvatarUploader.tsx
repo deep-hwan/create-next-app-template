@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
+import { LoadingSpinner } from '@/@dble_layout';
 import { Interpolation, Theme } from '@emotion/react';
-import { LoadingSpinner } from 'dble-layout';
 import { ReactNode, useRef } from 'react';
 
 //

@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
+import { Skeleton } from '@/@dble_layout';
 import { useUid } from '@/libs/hooks';
-import { Skeleton } from 'dble-layout';
 import Image from 'next/image';
 import { ForwardedRef, forwardRef, HTMLAttributes, useCallback, useEffect, useRef, useState } from 'react';
 import { PopupImageWrapper } from './instances/PopupImageWrapper';

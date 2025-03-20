@@ -1,4 +1,4 @@
-import { Background, Padding } from 'dble-layout';
+import { Background, Padding } from '@/@dble_layout';
 
 export const CardContainer = ({
   children,

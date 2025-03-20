@@ -10,8 +10,8 @@ import { 장바구니 } from '@/app/home/장바구니';
 import { 채팅목록 } from '@/app/home/채팅목록';
 import { 채팅방 } from '@/app/home/채팅방';
 
+import { Flex } from '@/@dble_layout';
 import SEOHead from '@/libs/site/SeoHead';
-import { Flex } from 'dble-layout';
 
 export default function Index() {
   return (
