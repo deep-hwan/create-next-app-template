@@ -1,6 +1,8 @@
 /** @jsxImportSource @emotion/react */
+"use client";
+
 import { cx } from "@emotion/css";
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import React, { useMemo } from "react";
 import { baseStylesProps } from "../styles/baseStylesProps";
 import { spaceStylesProps } from "../styles/spaceStylesProps";
@@ -42,6 +44,9 @@ const Text = React.forwardRef<HTMLElement, TextLayoutElement & TextPropsRef>(
       scale,
       rotate,
       zIndex,
+      wordBreak = "keep-all",
+      wordWrap = "break-word",
+      overflowWrap = "break-word",
       userSelect,
       transition = { duration: 0.25, type: "ease-in-out" },
       _hover,
@@ -53,36 +58,12 @@ const Text = React.forwardRef<HTMLElement, TextLayoutElement & TextPropsRef>(
     },
     ref
   ) => {
-    const pPs = {
-      w,
-      maxW,
-      minW,
-      h,
-      maxH,
-      minH,
-      padding,
-      margin,
-      size,
-      weight,
-      align,
-      color,
-      shadow,
-      transform,
-      decoration,
-      lineHeight,
-      whiteSpace,
-      ellipsis,
-      opacity,
-      scale,
-      rotate,
-    };
-
     const Component = as || "p";
 
     //
     // extended props styles
     const ExtendedStyles = (props: TextType & { as?: TextElementType }) => {
-      return {
+      const styles = {
         width: props?.w,
         maxWidth: props?.maxW,
         minWidth: props?.minW,
@@ -91,6 +72,9 @@ const Text = React.forwardRef<HTMLElement, TextLayoutElement & TextPropsRef>(
         minHeight: props?.minH,
 
         opacity: props.opacity,
+        wordBreak: props.wordBreak,
+        wordWrap: props.wordWrap,
+        overflowWrap: props.overflowWrap,
 
         ...typographyStylesProps({
           as: props.as,
@@ -113,6 +97,9 @@ const Text = React.forwardRef<HTMLElement, TextLayoutElement & TextPropsRef>(
           rotate: props.rotate,
         }),
       };
+
+      // Using a type assertion to solve the CSSObject type issue
+      return css(styles as CSSObject);
     };
 
     //
@@ -133,54 +120,133 @@ const Text = React.forwardRef<HTMLElement, TextLayoutElement & TextPropsRef>(
 
     //
     // media-query styles
-    const mediaStyles = useMemo(
-      () => createMediaStyles(_mq, ExtendedStyles),
-      [_mq]
-    );
+    const mediaStyles = useMemo(() => {
+      // This conversion is needed to fix the type issue with createMediaStyles
+      const stylesFunction = (styles: TextType) => {
+        return ExtendedStyles(styles);
+      };
+      return createMediaStyles(_mq, stylesFunction);
+    }, [_mq]);
 
     //
     // pseudos
-    const pseudoStyles = useMemo(
-      () =>
-        css({
-          "&:hover": ExtendedStyles(_hover || {}),
-          "&:focus": ExtendedStyles(_focus || {}),
-          "&:active": ExtendedStyles(_active || {}),
-        }),
-      [_hover, _focus, _active]
-    );
+    const pseudoStyles = useMemo(() => {
+      const hoverStyles = _hover ? ExtendedStyles(_hover) : css({});
+      const focusStyles = _focus ? ExtendedStyles(_focus) : css({});
+      const activeStyles = _active ? ExtendedStyles(_active) : css({});
+
+      return css`
+        &:hover {
+          ${hoverStyles}
+        }
+        &:focus {
+          ${focusStyles}
+        }
+        &:active {
+          ${activeStyles}
+        }
+      `;
+    }, [_hover, _focus, _active]);
 
     //
     // combined styles
-    const combinedStyles = useMemo(
-      () => css`
+    const combinedStyles = useMemo(() => {
+      const pPs = {
+        w,
+        maxW,
+        minW,
+        h,
+        maxH,
+        minH,
+        padding,
+        margin,
+        size,
+        weight,
+        align,
+        color,
+        shadow,
+        transform,
+        decoration,
+        lineHeight,
+        whiteSpace,
+        ellipsis,
+        opacity,
+        scale,
+        rotate,
+        wordBreak,
+        wordWrap,
+        overflowWrap,
+      };
+
+      const baseProps = {
+        ...pPs,
+        size: pPs.size ?? 15,
+        color: pPs.color ?? "#414243",
+        whiteSpace: pPs.whiteSpace ?? "pre-line",
+        align: pPs.align ?? "start",
+      };
+
+      const baseStyles = ExtendedStyles(baseProps);
+
+      return css`
         ${baseStyle}
-        ${ExtendedStyles({
-          ...pPs,
-          size: pPs.size ?? 15,
-          color: pPs.color ?? "#5d5d5f",
-          whiteSpace: pPs.whiteSpace ?? "pre-line",
-          align: pPs.align ?? "start",
-        })}
-    ${mediaStyles}
-    ${pseudoStyles}
-      `,
-      [baseStyle, pPs, mediaStyles, pseudoStyles]
-    );
+        ${baseStyles}
+          ${mediaStyles}
+          ${pseudoStyles}
+      `;
+    }, [
+      baseStyle,
+      mediaStyles,
+      pseudoStyles,
+      w,
+      maxW,
+      minW,
+      h,
+      maxH,
+      minH,
+      padding,
+      margin,
+      size,
+      weight,
+      align,
+      color,
+      shadow,
+      transform,
+      decoration,
+      lineHeight,
+      whiteSpace,
+      ellipsis,
+      opacity,
+      scale,
+      rotate,
+      wordBreak,
+      wordWrap,
+      overflowWrap,
+    ]);
 
     const combinedClassName = cx(`dble-text${as ? `-${as}` : ""}`, className);
 
+    // Define a proper type for rest props
+    type RestProps = Omit<
+      React.HTMLAttributes<HTMLElement>,
+      keyof TextLayoutElement & TextPropsRef
+    >;
+
     return (
       <Component
-        ref={ref}
+        // Using `as any` here is acceptable as we need to deal with complex component ref typing
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ref={ref as any}
         className={combinedClassName}
         css={css([combinedStyles, cssProp])}
-        {...(rest as any)}
+        {...(rest as RestProps)}
       >
         {children}
       </Component>
     );
   }
 );
+
+Text.displayName = "Text";
 
 export default Text;

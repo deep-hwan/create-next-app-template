@@ -1,7 +1,7 @@
 import { Flex, Padding } from '@/@dble_layout';
 import Calendar from '@/@widgets/calendar/Calendar';
+import onScrollToNextRef from '@/libs/handler/onScrollToRef';
 import { useMoment } from '@/libs/hooks';
-import { scrollToNextRef } from '@/libs/utils/scrollToRef';
 import { useRef, useState } from 'react';
 import WidgetContainer from './_WidgetContainer';
 
@@ -22,7 +22,7 @@ export const 달력 = () => {
             date={date}
             onClick={data => {
               setDate(data);
-              scrollToNextRef(ref);
+              onScrollToNextRef(ref);
             }}
           />
         </Padding>

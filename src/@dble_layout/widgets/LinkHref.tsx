@@ -3,6 +3,7 @@
 
 import { cx } from "@emotion/css";
 import { css, CSSObject } from "@emotion/react";
+import Link from "next/link";
 import React, { useCallback, useMemo } from "react";
 import { baseStylesProps } from "../styles/baseStylesProps";
 import { borderStylesProps } from "../styles/borderStylesProps";
@@ -14,18 +15,16 @@ import { transformStylesProps } from "../styles/transformStylesProps";
 import { typographyStylesProps } from "../styles/typographyStylesProps";
 import { LayoutPropsRef } from "../types/piece/PipeLinePropsType";
 import {
-  TouchableOpacityLayoutElement,
-  TouchableOpacityType,
-} from "../types/props/TouchableOpacitPropsType";
-import { createMediaStyles } from "../utils/createMediaStyles";
+  LinkHrefLayoutElement,
+  LinkHrefType,
+} from "../types/props/LinkHrefPropsType";
 
-const TouchableOpacity = React.forwardRef<
-  HTMLElement,
-  TouchableOpacityLayoutElement & LayoutPropsRef
+const LinkHref = React.forwardRef<
+  HTMLAnchorElement,
+  LinkHrefLayoutElement & LayoutPropsRef
 >(
   (
     {
-      as,
       children,
       className,
       w,
@@ -66,25 +65,28 @@ const TouchableOpacity = React.forwardRef<
       _mq = {},
       disabled,
       css: cssProp,
+      href,
+      target,
       ...rest
     },
     ref
   ) => {
-    const Component = as || "div";
-
     const handleClick = useCallback(
-      (event: React.MouseEvent<HTMLButtonElement>) => {
-        if (rest?.onClick)
-          rest?.onClick(event as React.MouseEvent<HTMLElement>);
+      (event: React.MouseEvent<HTMLAnchorElement>) => {
+        if (disabled) {
+          event.preventDefault();
+          return;
+        }
+        if (rest?.onClick) {
+          rest?.onClick(event);
+        }
       },
-      [rest]
+      [disabled, rest]
     );
 
     //
     // extended props styles
-    const ExtendedStyles = (
-      props: TouchableOpacityType & { as?: TouchableOpacityType }
-    ) => {
+    const ExtendedStyles = (props: LinkHrefType & { as?: LinkHrefType }) => {
       const styles = {
         width: props?.w,
         maxWidth: props?.maxW,
@@ -133,21 +135,15 @@ const TouchableOpacity = React.forwardRef<
         css({
           position: "relative",
           display: "flex",
+          textDecoration: "none",
           ...baseStylesProps({
             transition,
             zIndex,
             cursor: disabled ? "default" : cursor,
-            userSelect: userSelect ?? (rest?.onClick && "none"),
+            userSelect,
             onClick: rest.onClick,
             onMouseEnter: rest.onMouseEnter,
           }),
-          ...(rest?.onClick
-            ? {
-                "div, h1, h2, h3, h4, h5, h6, p, a, li, ul, span, b": {
-                  userSelect: "none",
-                },
-              }
-            : {}),
         }),
       [
         cursor,
@@ -163,7 +159,7 @@ const TouchableOpacity = React.forwardRef<
     //
     // media-query styles
     const mediaStyles = useMemo(() => {
-      const stylesFunction = (styles: TouchableOpacityType) => {
+      const stylesFunction = (styles: LinkHrefType) => {
         return ExtendedStyles(styles);
       };
       return createMediaStyles(_mq, stylesFunction);
@@ -298,32 +294,73 @@ const TouchableOpacity = React.forwardRef<
       scale,
     ]);
 
-    const combinedClassName = cx(
-      `dble-touchableOpacity${as ? `-${as}` : ""}`,
-      className
-    );
+    const combinedClassName = cx(`dble-linkHref`, className);
 
-    // Define a proper type for rest props
-    type RestProps = Omit<
-      React.HTMLAttributes<HTMLElement>,
-      keyof TouchableOpacityLayoutElement & LayoutPropsRef
-    >;
+    // Extract only the Link specific props
+    const linkProps = {
+      href,
+      passHref: true,
+      legacyBehavior: true,
+    };
+
+    // Extract only the anchor specific props
+    const anchorProps = {
+      className: combinedClassName,
+      onClick: handleClick,
+      ref,
+      target: target,
+    };
+
+    // If disabled, prevent navigation by using div instead of Link
+    if (disabled) {
+      return (
+        <div
+          className={combinedClassName}
+          css={css([combinedStyles, cssProp])}
+          aria-disabled="true"
+        >
+          {children}
+        </div>
+      );
+    }
 
     return (
-      <Component
-        ref={ref}
-        className={combinedClassName}
-        css={css([combinedStyles, cssProp])}
-        onClick={disabled ? undefined : handleClick}
-        disabled={disabled}
-        {...(rest as RestProps)}
-      >
-        {children}
-      </Component>
+      <Link itemProp="url" {...linkProps}>
+        <a {...anchorProps} css={css([combinedStyles, cssProp])} {...rest}>
+          {children}
+        </a>
+      </Link>
     );
   }
 );
 
-TouchableOpacity.displayName = "TouchableOpacity";
+LinkHref.displayName = "LinkHref";
 
-export default TouchableOpacity;
+// Helper function for createMediaStyles (copied from TouchableOpacity implementation)
+const createMediaStyles = (
+  mediaQueries: any,
+  stylesFunction: (styles: any) => any
+) => {
+  if (!mediaQueries || Object.keys(mediaQueries).length === 0) {
+    return css({});
+  }
+
+  let mediaStyles = "";
+
+  Object.entries(mediaQueries).forEach(([breakpoint, styles]) => {
+    const mediaQuery = `@media (min-width: ${breakpoint}px)`;
+    const styleCSS = stylesFunction(styles);
+
+    mediaStyles += `
+      ${mediaQuery} {
+        ${styleCSS}
+      }
+    `;
+  });
+
+  return css`
+    ${mediaStyles}
+  `;
+};
+
+export default LinkHref;

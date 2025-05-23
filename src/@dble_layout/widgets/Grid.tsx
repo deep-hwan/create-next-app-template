@@ -1,6 +1,8 @@
 /** @jsxImportSource @emotion/react */
+"use client";
+
 import { cx } from "@emotion/css";
-import { css } from "@emotion/react";
+import { css, SerializedStyles } from "@emotion/react";
 import React, { useMemo } from "react";
 import { baseStylesProps } from "../styles/baseStylesProps";
 import { gridStylesProps } from "../styles/gridStylesProps";
@@ -38,32 +40,12 @@ const Grid = React.forwardRef<HTMLElement, GridLayoutElement & LayoutPropsRef>(
       ...rest
     } = props;
 
-    const pPs = {
-      w,
-      maxW,
-      minW,
-      h,
-      maxH,
-      minH,
-      templateColumns,
-      templateRows,
-      templateAreas,
-      gap,
-      autoFlow,
-      autoColumns,
-      autoRows,
-      justifyItems,
-      alignItems,
-      justifyContent,
-      alignContent,
-    };
-
     const Component = as || "div";
 
     //
     // extended props styles
-    const ExtendedStyles = (props: GridType) => {
-      return {
+    const ExtendedStyles = (props: GridType): SerializedStyles => {
+      return css({
         width: props?.w,
         maxWidth: props?.maxW,
         minWidth: props?.minW,
@@ -86,7 +68,7 @@ const Grid = React.forwardRef<HTMLElement, GridLayoutElement & LayoutPropsRef>(
           justifyContent: props.justifyContent,
           alignContent: props.alignContent,
         }),
-      };
+      });
     };
 
     //
@@ -112,30 +94,71 @@ const Grid = React.forwardRef<HTMLElement, GridLayoutElement & LayoutPropsRef>(
 
     //
     // combined styles
-    const combinedStyles = useMemo(
-      () => css`
+    const combinedStyles = useMemo(() => {
+      const pPs = {
+        w,
+        maxW,
+        minW,
+        h,
+        maxH,
+        minH,
+        templateColumns,
+        templateRows,
+        templateAreas,
+        gap,
+        autoFlow,
+        autoColumns,
+        autoRows,
+        justifyItems,
+        alignItems,
+        justifyContent,
+        alignContent,
+      };
+
+      return css`
         ${baseStyle}
         ${ExtendedStyles({
           ...pPs,
           w: pPs.w ?? "100%",
         })}
-    ${mediaStyles}
-      `,
-      [baseStyle, pPs, mediaStyles]
-    );
+          ${mediaStyles}
+      `;
+    }, [
+      baseStyle,
+      mediaStyles,
+      w,
+      maxW,
+      minW,
+      h,
+      maxH,
+      minH,
+      templateColumns,
+      templateRows,
+      templateAreas,
+      gap,
+      autoFlow,
+      autoColumns,
+      autoRows,
+      justifyItems,
+      alignItems,
+      justifyContent,
+      alignContent,
+    ]);
 
     const combinedClassName = cx(`dble-grid${as ? `-${as}` : ""}`, className);
     return (
       <Component
-        ref={ref}
+        ref={ref as never}
         className={combinedClassName}
         css={css([combinedStyles, cssProp])}
-        {...(rest as any)}
+        {...(rest as React.HTMLAttributes<HTMLElement>)}
       >
         {children}
       </Component>
     );
   }
 );
+
+Grid.displayName = "Grid";
 
 export default Grid;

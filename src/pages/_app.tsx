@@ -1,9 +1,8 @@
-import createEmotionCache from '@/libs/utils/createEmotionCache';
 import { useOpenWebBrowser } from '@/libs/hooks';
 import { useScrollRestoration } from '@/libs/hooks/useScrollRestoration';
 import AppProvider from '@/libs/provider/AppProvider';
-import JengaProvider from '@/libs/provider/JengaProvider';
 import GlobalStyles from '@/libs/themes/globalStyles';
+import createEmotionCache from '@/libs/utils/createEmotionCache';
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import { HydrationBoundary, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { SessionProvider } from 'next-auth/react';
@@ -40,13 +39,11 @@ export default function MyApp({ Component, pageProps, router, emotionCache = cli
         <HydrationBoundary state={pageProps.dehydratedState}>
           <SessionProvider session={pageProps.session} basePath='/api/auth'>
             <RecoilRoot>
-              <JengaProvider>
+              <CacheProvider value={emotionCache}>
                 <AppProvider>
-                  <CacheProvider value={emotionCache}>
-                    <Component {...pageProps} />
-                  </CacheProvider>
+                  <Component {...pageProps} />
                 </AppProvider>
-              </JengaProvider>
+              </CacheProvider>
             </RecoilRoot>
           </SessionProvider>
         </HydrationBoundary>

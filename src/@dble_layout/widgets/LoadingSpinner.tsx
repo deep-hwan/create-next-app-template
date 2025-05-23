@@ -1,4 +1,6 @@
 /** @jsxImportSource @emotion/react */
+"use client";
+
 import { keyframes } from "@emotion/react";
 import { ForwardedRef, HTMLAttributes, forwardRef, memo } from "react";
 
@@ -59,4 +61,6 @@ const LoadingSpinnerUi = forwardRef(
     );
   }
 );
+LoadingSpinnerUi.displayName = "LoadingSpinnerUi";
+
 export const LoadingSpinner = memo(LoadingSpinnerUi);

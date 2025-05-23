@@ -1,5 +1,8 @@
 import { Appbar } from '@/@widgets/navigator/Appbar';
 import { useRouter } from 'next/router';
+import { ConfirmProvider } from './ConfirmProvider';
+import { DialogProvider } from './DialogProvider';
+import { JengaProvider } from './JengaProvider';
 
 //
 export default function AppProvider({ children }: { children: React.ReactNode }): JSX.Element {
@@ -8,25 +11,21 @@ export default function AppProvider({ children }: { children: React.ReactNode })
   const errPath = pathname === '/404';
 
   return (
-    <Layout>
-      {!errPath && <Appbar />}
+    <JengaProvider>
+      <ConfirmProvider>
+        <DialogProvider>
+          <div id='layout' css={{ ...styleSheet, minHeight: '100vh' }}>
+            {!errPath && <Appbar />}
 
-      <Main>{children}</Main>
-    </Layout>
+            <main id='main_layer' css={styleSheet}>
+              {children}
+            </main>
+          </div>
+        </DialogProvider>
+      </ConfirmProvider>
+    </JengaProvider>
   );
 }
-
-const Layout = ({ children }: { children: React.ReactNode }) => (
-  <div id='layout' css={{ ...styleSheet, minHeight: '100vh' }}>
-    {children}
-  </div>
-);
-
-const Main = ({ children }: { children: React.ReactNode }) => (
-  <main id='main_layer' css={styleSheet}>
-    {children}
-  </main>
-);
 
 const styleSheet = {
   width: '100%',

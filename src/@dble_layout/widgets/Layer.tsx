@@ -1,6 +1,8 @@
 /** @jsxImportSource @emotion/react */
+"use client";
+
 import { cx } from "@emotion/css";
-import { css } from "@emotion/react";
+import { css, SerializedStyles } from "@emotion/react";
 import React, { useMemo } from "react";
 import { baseStylesProps } from "../styles/baseStylesProps";
 import { borderStylesProps } from "../styles/borderStylesProps";
@@ -37,6 +39,7 @@ const Layer = React.forwardRef<
     justify,
     gap,
     order,
+    wrap,
 
     // position
     position,
@@ -71,49 +74,14 @@ const Layer = React.forwardRef<
     ...rest
   } = props;
 
-  const pPs = {
-    // layout
-    w,
-    maxW,
-    minW,
-    h,
-    maxH,
-    minH,
-
-    // flex
-    flex,
-    direc,
-    isReverse,
-    align,
-    justify,
-    gap,
-    order,
-
-    // position
-    position,
-
-    // padding
-    padding,
-
-    // margin
-    margin,
-
-    // background
-    fill,
-    border,
-    shadow,
-    blur,
-    opacity,
-    scale,
-    rotate,
-  };
-
   const Component = as || "div";
 
   //
   // extended props styles
-  const ExtendedStyles = (props: LayerType) => {
-    return {
+  const ExtendedStyles = (
+    props: LayerType
+  ): SerializedStyles & React.CSSProperties => {
+    return css({
       width: props?.w,
       maxWidth: props?.maxW,
       minWidth: props?.minW,
@@ -182,7 +150,7 @@ const Layer = React.forwardRef<
         rotate: props.rotate,
       }),
       opacity: props.opacity,
-    };
+    });
   };
 
   //
@@ -226,8 +194,46 @@ const Layer = React.forwardRef<
 
   //
   // combined styles
-  const combinedStyles = useMemo(
-    () => css`
+  const combinedStyles = useMemo(() => {
+    const pPs = {
+      // layout
+      w,
+      maxW,
+      minW,
+      h,
+      maxH,
+      minH,
+
+      // flex
+      flex,
+      direc,
+      isReverse,
+      align,
+      justify,
+      gap,
+      order,
+      wrap,
+
+      // position
+      position,
+
+      // padding
+      padding,
+
+      // margin
+      margin,
+
+      // background
+      fill,
+      border,
+      shadow,
+      blur,
+      opacity,
+      scale,
+      rotate,
+    };
+
+    return css`
       ${baseStyle}
       ${ExtendedStyles({
         ...pPs,
@@ -235,23 +241,59 @@ const Layer = React.forwardRef<
         h: pPs.h ?? (pPs.flex === 1 ? "100%" : undefined),
         direc: pPs.direc ?? "column",
       })}
-      ${mediaStyles}
-      ${pseudoStyles}
-    `,
-    [baseStyle, pPs, mediaStyles, pseudoStyles]
-  );
+        ${mediaStyles}
+        ${pseudoStyles}
+    `;
+  }, [
+    baseStyle,
+    mediaStyles,
+    pseudoStyles,
+    w,
+    maxW,
+    minW,
+    h,
+    maxH,
+    minH,
+    flex,
+    direc,
+    isReverse,
+    align,
+    justify,
+    gap,
+    order,
+    position,
+    padding,
+    margin,
+    fill,
+    border,
+    shadow,
+    blur,
+    opacity,
+    scale,
+    rotate,
+    wrap,
+  ]);
+
+  // Process cssProp to handle media queries properly
+  const processedCssProp = useMemo(() => {
+    if (!cssProp) return undefined;
+
+    // Create a new CSS string that safely handles any dynamic media query keys
+    return css(cssProp);
+  }, [cssProp]);
 
   const combinedClassName = cx(`dble-layer${as ? `-${as}` : ""}`, className);
   return (
     <Component
-      ref={ref}
+      ref={ref as never}
       className={combinedClassName}
-      css={css([combinedStyles, cssProp])}
-      {...(rest as any)}
+      css={css([combinedStyles, processedCssProp])}
+      {...(rest as React.HTMLAttributes<HTMLElement>)}
     >
       {children}
     </Component>
   );
 });
 
+Layer.displayName = "Layer";
 export default Layer;

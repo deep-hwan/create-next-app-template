@@ -36,6 +36,9 @@ export interface TextType
   opacity?: number;
   scale?: number;
   rotate?: string | number;
+  wordBreak?: "normal" | "break-all" | "keep-all" | "break-word";
+  wordWrap?: "normal" | "break-word";
+  overflowWrap?: "normal" | "break-word" | "anywhere";
 }
 
 interface TextPropsType<T extends ElementType = "p"> extends TextType {

@@ -3,6 +3,17 @@ import { TextElementType } from "../types/props/TextPropsType";
 
 type Props = TypographyType & { as?: TextElementType };
 
+type EllipsisStyles = {
+  overflow: string;
+  whiteSpace: string;
+  textOverflow: string;
+  display: string;
+  WebkitBoxOrient: string;
+  wordBreak: string;
+  WebkitLineClamp: number;
+  padding: number;
+};
+
 const typographyStylesProps = ({
   as,
   txtSize,
@@ -72,16 +83,18 @@ const typographyStylesProps = ({
     }
   };
 
-  const ellipsisExtend = ellipsis?.isActive && {
-    overflow: "hidden",
-    whiteSpace: "normal",
-    textOverflow: "ellipsis",
-    display: "-webkit-box",
-    WebkitBoxOrient: "vertical",
-    wordBreak: "keep-all",
-    WebkitLineClamp: ellipsis.line ?? 1,
-    padding: 0,
-  };
+  const ellipsisExtend: EllipsisStyles | object = ellipsis?.isActive
+    ? {
+        overflow: "hidden",
+        whiteSpace: "normal",
+        textOverflow: "ellipsis",
+        display: "-webkit-box",
+        WebkitBoxOrient: "vertical",
+        wordBreak: "keep-all",
+        WebkitLineClamp: ellipsis.line ?? 1,
+        padding: 0,
+      }
+    : {};
 
   return {
     fontSize: txtSizeExtend(),
@@ -93,7 +106,7 @@ const typographyStylesProps = ({
     lineHeight: lineHeight,
     whiteSpace: whiteSpace,
     textDecoration: txtDecoration,
-    ...(ellipsisExtend as any),
+    ...ellipsisExtend,
   };
 };
 

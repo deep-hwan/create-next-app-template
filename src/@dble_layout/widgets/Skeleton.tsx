@@ -1,4 +1,6 @@
 /** @jsxImportSource @emotion/react */
+"use client";
+
 import { cx } from "@emotion/css";
 import { css } from "@emotion/react";
 import React, { ForwardedRef, useMemo } from "react";
@@ -51,11 +53,11 @@ const Skeleton = React.forwardRef(
           animation: "load 1s infinite",
           transition: "0.2s ease-in-out",
         });
-    }, [primaryColor, moveColor]);
+    }, []);
 
     const mediaStyles = useMemo(
       () => createMediaStyles(_mq, ExtendedStyles),
-      [_mq]
+      [_mq, ExtendedStyles]
     );
 
     const combinedClassName = cx("dble-skeleton", props.className);
@@ -84,5 +86,7 @@ const Skeleton = React.forwardRef(
     );
   }
 );
+
+Skeleton.displayName = "Skeleton";
 
 export default React.memo(Skeleton);

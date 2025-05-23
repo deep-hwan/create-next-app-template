@@ -1,6 +1,8 @@
 /** @jsxImportSource @emotion/react */
+"use client";
+
 import { cx } from "@emotion/css";
-import { css } from "@emotion/react";
+import { css, SerializedStyles } from "@emotion/react";
 import React, { useMemo } from "react";
 import { baseStylesProps } from "../styles/baseStylesProps";
 import { flexStylesProps } from "../styles/flexStylesProps";
@@ -40,34 +42,12 @@ const Flex = React.forwardRef<HTMLElement, FlexLayoutElement & LayoutPropsRef>(
       ...rest
     } = props;
 
-    const pPs = {
-      w,
-      maxW,
-      minW,
-      h,
-      maxH,
-      minH,
-      flex,
-      direc,
-      isReverse,
-      align,
-      justify,
-      gap,
-      order,
-      grow,
-      shrink,
-      basis,
-      alignContent,
-      alignSelf,
-      wrap,
-    };
-
     const Component = as || "div";
 
     //
     // extended props styles
-    const ExtendedStyles = (props: FlexType) => {
-      return {
+    const ExtendedStyles = (props: FlexType): SerializedStyles => {
+      return css({
         width: props?.w,
         maxWidth: props?.maxW,
         minWidth: props?.minW,
@@ -91,7 +71,7 @@ const Flex = React.forwardRef<HTMLElement, FlexLayoutElement & LayoutPropsRef>(
           alignContent: props.alignContent,
           alignSelf: props.alignSelf,
         }),
-      };
+      });
     };
 
     //
@@ -117,31 +97,76 @@ const Flex = React.forwardRef<HTMLElement, FlexLayoutElement & LayoutPropsRef>(
 
     //
     // combined styles
-    const combinedStyles = useMemo(
-      () => css`
+    const combinedStyles = useMemo(() => {
+      const pPs = {
+        w,
+        maxW,
+        minW,
+        h,
+        maxH,
+        minH,
+        flex,
+        direc,
+        isReverse,
+        align,
+        justify,
+        gap,
+        order,
+        grow,
+        shrink,
+        basis,
+        alignContent,
+        alignSelf,
+        wrap,
+      };
+
+      return css`
         ${baseStyle}
         ${ExtendedStyles({
           ...pPs,
           w: pPs.w ?? "100%",
           direc: pPs.direc ?? "column",
         })}
-    ${mediaStyles}
-      `,
-      [baseStyle, pPs, mediaStyles]
-    );
+          ${mediaStyles}
+      `;
+    }, [
+      baseStyle,
+      mediaStyles,
+      w,
+      maxW,
+      minW,
+      h,
+      maxH,
+      minH,
+      flex,
+      direc,
+      isReverse,
+      align,
+      justify,
+      gap,
+      order,
+      grow,
+      shrink,
+      basis,
+      alignContent,
+      alignSelf,
+      wrap,
+    ]);
 
     const combinedClassName = cx(`dble-flex${as ? `-${as}` : ""}`, className);
     return (
       <Component
-        ref={ref}
+        ref={ref as never}
         className={combinedClassName}
         css={css([combinedStyles, cssProp])}
-        {...(rest as any)}
+        {...(rest as React.HTMLAttributes<HTMLElement>)}
       >
         {children}
       </Component>
     );
   }
 );
+
+Flex.displayName = "Flex";
 
 export default Flex;

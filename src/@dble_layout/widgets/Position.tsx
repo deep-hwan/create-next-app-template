@@ -1,7 +1,9 @@
 /** @jsxImportSource @emotion/react */
+"use client";
+
 import { cx } from "@emotion/css";
-import { css } from "@emotion/react";
-import React, { ComponentPropsWithoutRef, useMemo } from "react";
+import { css, SerializedStyles } from "@emotion/react";
+import React, { ComponentPropsWithoutRef, useCallback, useMemo } from "react";
 import { baseStylesProps } from "../styles/baseStylesProps";
 import { LayoutElementType } from "../types/piece/LayoutElementType";
 import {
@@ -38,7 +40,72 @@ const Position = React.forwardRef<
     ...rest
   } = props;
 
-  const pPs = {
+  const Component = as || "div";
+
+  //
+  // extended props styles
+  const ExtendedStyles = useCallback(
+    (props: PositionType): SerializedStyles => {
+      return css({
+        width: props?.w,
+        maxWidth: props?.maxW,
+        minWidth: props?.minW,
+        height: props?.h,
+        maxHeight: props?.maxH,
+        minHeight: props?.minH,
+
+        display: "flex",
+
+        position: props.type,
+        top: props.top,
+        bottom: props.bottom,
+        left: props.left,
+        right: props.right,
+        transform: axis
+          ? `translate(${
+              typeof axis.x === "number" ? `${axis.x}px` : axis.x ?? "0"
+            }, ${typeof axis.y === "number" ? `${axis.y}px` : axis.y ?? "0"})`
+          : undefined,
+      });
+    },
+    [axis]
+  );
+
+  //
+  // media-query styles
+  const mediaStyles = useMemo(
+    () => createMediaStyles(_mq, ExtendedStyles),
+    [_mq, ExtendedStyles]
+  );
+
+  //
+  // combined styles
+  const combinedStyles = useMemo(() => {
+    const pPs = {
+      w,
+      maxW,
+      minW,
+      h,
+      maxH,
+      minH,
+      type,
+      top,
+      bottom,
+      left,
+      right,
+      axis,
+    };
+
+    return css`
+      ${baseStylesProps({ transition, zIndex })}
+      ${ExtendedStyles({ ...pPs, type: pPs.type ?? "relative" })}
+        ${mediaStyles}
+    `;
+  }, [
+    mediaStyles,
+    ExtendedStyles,
+    transition,
+    zIndex,
     w,
     maxW,
     minW,
@@ -51,65 +118,21 @@ const Position = React.forwardRef<
     left,
     right,
     axis,
-  };
-
-  const Component = as || "div";
-
-  //
-  // extended props styles
-  const ExtendedStyles = (props: PositionType) => {
-    return {
-      width: props?.w,
-      maxWidth: props?.maxW,
-      minWidth: props?.minW,
-      height: props?.h,
-      maxHeight: props?.maxH,
-      minHeight: props?.minH,
-
-      display: "flex",
-
-      position: props.type,
-      top: props.top,
-      bottom: props.bottom,
-      left: props.left,
-      right: props.right,
-      transform: axis
-        ? `translate(${
-            typeof axis.x === "number" ? `${axis.x}px` : axis.x ?? "0"
-          }, ${typeof axis.y === "number" ? `${axis.y}px` : axis.y ?? "0"})`
-        : undefined,
-    };
-  };
-
-  //
-  // media-query styles
-  const mediaStyles = useMemo(
-    () => createMediaStyles(_mq, ExtendedStyles),
-    [_mq]
-  );
-
-  //
-  // combined styles
-  const combinedStyles = useMemo(
-    () => css`
-      ${baseStylesProps({ transition, zIndex })}
-      ${ExtendedStyles({ ...pPs, type: pPs.type ?? "relative" })}
-      ${mediaStyles}
-    `,
-    [pPs, mediaStyles]
-  );
+  ]);
 
   const combinedClassName = cx("dble-position", className);
   return (
     <Component
-      ref={ref}
+      ref={ref as never}
       className={combinedClassName}
       css={css([combinedStyles, cssProp])}
-      {...(rest as any)}
+      {...(rest as React.HTMLAttributes<HTMLElement>)}
     >
       {children}
     </Component>
   );
 });
+
+Position.displayName = "Position";
 
 export default Position;

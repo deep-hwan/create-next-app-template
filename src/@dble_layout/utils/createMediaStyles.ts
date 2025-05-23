@@ -1,4 +1,4 @@
-import { css } from "@emotion/react";
+import { css, SerializedStyles } from "@emotion/react";
 import { mediaScreenSize } from "./mediaScreenSize";
 
 type MediaQueryStyles<T> = {
@@ -7,7 +7,7 @@ type MediaQueryStyles<T> = {
 
 export function createMediaStyles<T>(
   _mq: MediaQueryStyles<T>,
-  ExtendedStyles: (styles: T) => any
+  ExtendedStyles: (styles: T) => SerializedStyles
 ) {
   return mediaScreenSize.map((size) => {
     const breakpointKey = `w${size}` as keyof typeof _mq;

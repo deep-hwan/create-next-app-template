@@ -1,7 +1,9 @@
 /** @jsxImportSource @emotion/react */
+
+"use client";
 import { cx } from "@emotion/css";
-import { css } from "@emotion/react";
-import React, { useMemo } from "react";
+import { css, SerializedStyles } from "@emotion/react";
+import { ElementType, forwardRef, useMemo } from "react";
 import { baseStylesProps } from "../styles/baseStylesProps";
 import { borderStylesProps } from "../styles/borderStylesProps";
 import { gradientStylesProps } from "../styles/gradientStylesProps";
@@ -14,7 +16,8 @@ import {
 } from "../types/props/BackgroundPropsType";
 import { createMediaStyles } from "../utils/createMediaStyles";
 
-const Background = React.forwardRef<
+// Use a polymorphic component pattern with proper typing
+const Background = forwardRef<
   HTMLElement,
   BackgroundLayoutElement & LayoutPropsRef
 >((props, ref) => {
@@ -47,31 +50,10 @@ const Background = React.forwardRef<
     ...rest
   } = props;
 
-  const pPs = {
-    w,
-    maxW,
-    minW,
-    h,
-    maxH,
-    minH,
-    flex,
-    fill,
-    imageFill,
-    gradient,
-    border,
-    shadow,
-    blur,
-    opacity,
-    scale,
-    rotate,
-  };
-
-  const Component = as || "div";
-
   //
   // extended props styles
-  const ExtendedStyles = (props: BackgroundType) => {
-    return {
+  const ExtendedStyles = (props: BackgroundType): SerializedStyles => {
+    return css({
       width: props?.w,
       maxWidth: props?.maxW,
       minWidth: props?.minW,
@@ -96,7 +78,7 @@ const Background = React.forwardRef<
         rotate: props.rotate,
       }),
       opacity: props.opacity,
-    };
+    });
   };
 
   //
@@ -128,33 +110,74 @@ const Background = React.forwardRef<
 
   //
   // combined styles
-  const combinedStyles = useMemo(
-    () => css`
+  const combinedStyles = useMemo(() => {
+    const pPs = {
+      w,
+      maxW,
+      minW,
+      h,
+      maxH,
+      minH,
+      flex,
+      fill,
+      imageFill,
+      gradient,
+      border,
+      shadow,
+      blur,
+      opacity,
+      scale,
+      rotate,
+    };
+
+    return css`
       ${baseStyle}
       ${ExtendedStyles({
         ...pPs,
         w: pPs.w ?? "100%",
         h: pPs.h ?? (pPs.flex === 1 ? "100%" : undefined),
       })}
-      ${mediaStyles}
-    `,
-    [baseStyle, pPs, mediaStyles]
-  );
+        ${mediaStyles}
+    `;
+  }, [
+    baseStyle,
+    mediaStyles,
+    w,
+    maxW,
+    minW,
+    h,
+    maxH,
+    minH,
+    flex,
+    fill,
+    imageFill,
+    gradient,
+    border,
+    shadow,
+    blur,
+    opacity,
+    scale,
+    rotate,
+  ]);
 
+  const Component = (as || "div") as ElementType;
   const combinedClassName = cx(
     `dble-background${as ? `-${as}` : ""}`,
     className
   );
+
   return (
     <Component
       ref={ref}
       className={combinedClassName}
       css={css([combinedStyles, cssProp])}
-      {...(rest as any)}
+      {...rest}
     >
       {children}
     </Component>
   );
 });
+
+Background.displayName = "Background";
 
 export default Background;

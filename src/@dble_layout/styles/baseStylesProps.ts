@@ -1,4 +1,8 @@
+/** @jsxImportSource @emotion/react */
+"use client";
+
 import { CSSObject } from "@emotion/react";
+import React from "react";
 import { CursorType } from "../types/piece/CursorType";
 import { TransitionType } from "../types/piece/TransitionType";
 
@@ -14,8 +18,8 @@ export const baseStylesProps = ({
   transition?: TransitionType;
   zIndex?: number;
   userSelect?: string;
-  onClick?: any;
-  onMouseEnter?: any;
+  onClick?: React.MouseEventHandler<HTMLElement>;
+  onMouseEnter?: React.MouseEventHandler<HTMLElement>;
 }) => {
   return {
     zIndex,

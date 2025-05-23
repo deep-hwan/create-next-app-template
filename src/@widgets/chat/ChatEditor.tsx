@@ -1,7 +1,8 @@
 import { Background, Flex, Padding, TouchableOpacity } from '@/@dble_layout';
+import onScrollToNextRef from '@/libs/handler/onScrollToRef';
 import { useUid } from '@/libs/hooks';
 import { colors } from '@/libs/themes';
-import { scrollToNextRef } from '@/libs/utils/scrollToRef';
+
 import React, { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 
 interface Types extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
@@ -77,7 +78,7 @@ export const ChatEditor = React.forwardRef<HTMLTextAreaElement, Types>((props, r
               rows={1}
               id={props.id ?? useUid()}
               ref={textareaRef}
-              onFocus={() => props.isFocus && scrollToNextRef(editorRef)}
+              onFocus={() => props.isFocus && onScrollToNextRef(editorRef)}
               value={props.value}
               onKeyPress={e => {
                 if (e.key === 'Enter' || e.key === ' ') {

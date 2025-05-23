@@ -1,9 +1,11 @@
+/** @jsxImportSource @emotion/react */
+'use client';
+
 import { Background, Flex, Padding, Text, TouchableOpacity } from '@/@dble_layout';
-import { useUid } from '@/libs/hooks';
+import onScrollToNextRef from '@/libs/handler/onScrollToRef';
 import { fontSize } from '@/libs/themes';
-import { scrollToNextRef } from '@/libs/utils/scrollToRef';
 import { CSSObject } from '@emotion/react';
-import { InputHTMLAttributes, forwardRef, memo, useCallback, useEffect, useRef, useState } from 'react';
+import { InputHTMLAttributes, forwardRef, memo, useCallback, useEffect, useId, useRef, useState } from 'react';
 
 interface Props
   extends Omit<InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>, 'size' | 'type'> {
@@ -16,8 +18,8 @@ interface Props
   children?: never[];
   isStroke?: boolean;
   fieldColor?: string;
-  renderItem?: (item: any, index?: number) => React.ReactElement;
-  options?: any[];
+  renderItem?: (item: unknown, index?: number) => React.ReactElement;
+  options?: unknown[];
   focus?: boolean;
   isFocus?: boolean;
 }
@@ -43,6 +45,7 @@ const TextField = memo(
       },
       ref
     ) => {
+      const stableId = useId();
       const fieldRef = useRef<HTMLDivElement>(null);
       const textareaRef = useRef<HTMLTextAreaElement>(null);
       const [isFocused, setIsFocused] = useState<'focus' | 'error' | null>(null);
@@ -55,9 +58,9 @@ const TextField = memo(
       const handleFocus = useCallback(() => {
         if (fieldRef.current) {
           setIsFocused('focus');
-          if (isFocus) scrollToNextRef(fieldRef);
+          if (isFocus) onScrollToNextRef(fieldRef);
         }
-      }, []);
+      }, [isFocus]);
 
       const handleBlur = useCallback(() => {
         if (fieldRef.current) setIsFocused(null);
@@ -142,12 +145,12 @@ const TextField = memo(
                   {error && errorMessage ? errorMessage : label}
                 </Text>
 
-                <Flex direc='row' align='center' gap={10} onClick={() => scrollToNextRef(fieldRef)}>
+                <Flex direc='row' align='center' gap={10}>
                   {type === 'textarea' && (
                     <textarea
                       {...rest}
                       rows={1}
-                      id={rest.id ?? useUid()}
+                      id={rest.id ?? stableId}
                       ref={textareaRef}
                       value={value}
                       onFocus={handleFocus}
@@ -169,11 +172,14 @@ const TextField = memo(
                       <select
                         {...rest}
                         ref={ref as React.Ref<HTMLSelectElement>}
-                        id={rest.id ?? useUid()}
+                        id={rest.id ?? stableId}
                         disabled={rest.disabled}
                         onFocus={handleFocus}
                         onBlur={handleBlur}
-                        css={{ ...styles, color: value ? '#58595a' : '#c2c2c2' }}
+                        css={{
+                          ...styles,
+                          color: value ? '#58595a' : '#c2c2c2',
+                        }}
                       >
                         <option selected disabled>
                           {rest.placeholder}
@@ -187,7 +193,7 @@ const TextField = memo(
                   {type !== 'textarea' && type !== 'select' && (
                     <input
                       {...rest}
-                      id={rest.id ?? useUid()}
+                      id={rest.id ?? stableId}
                       type={type === 'password' ? 'password' : 'text'}
                       ref={ref as React.Ref<HTMLInputElement>}
                       maxLength={type === 'tel' ? 13 : rest.maxLength}

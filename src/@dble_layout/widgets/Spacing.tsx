@@ -1,4 +1,6 @@
 /** @jsxImportSource @emotion/react */
+"use client";
+
 import { cx } from "@emotion/css";
 import { css } from "@emotion/react";
 import React, { useMemo } from "react";
