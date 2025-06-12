@@ -89,7 +89,6 @@ export function NextRouterProvider({ children }: NextRouterProviderProps) {
       if (!isBackNavigation.current) {
         const position = window.scrollY;
         saveScrollPosition(currentUrl.current, position);
-        console.log('💾 Saved scroll on page unload:', position, 'for URL:', currentUrl.current);
       }
     };
 
@@ -97,7 +96,6 @@ export function NextRouterProvider({ children }: NextRouterProviderProps) {
       if (document.visibilityState === 'hidden' && !isBackNavigation.current) {
         const position = window.scrollY;
         saveScrollPosition(currentUrl.current, position);
-        console.log('💾 Saved scroll on visibility change:', position, 'for URL:', currentUrl.current);
       }
     };
 
@@ -115,12 +113,9 @@ export function NextRouterProvider({ children }: NextRouterProviderProps) {
   // beforePopState를 사용한 브라우저 네비게이션 감지
   useEffect(() => {
     const handleBeforePopState = (state: any) => {
-      console.log('🔙 beforePopState triggered');
-
       // 현재 스크롤 위치 저장
       const currentPosition = window.scrollY;
       saveScrollPosition(currentUrl.current, currentPosition);
-      console.log('🔙 Saved current scroll position:', currentPosition, 'for URL:', currentUrl.current);
 
       isBrowserNavigation.current = true;
       isBackNavigation.current = true;
@@ -139,20 +134,11 @@ export function NextRouterProvider({ children }: NextRouterProviderProps) {
   // popstate 이벤트로 브라우저 네비게이션 완료 감지
   useEffect(() => {
     const handlePopState = (event: PopStateEvent) => {
-      console.log('🔙 popstate event triggered');
-
       if (shouldRestoreScroll.current && isBackNavigation.current) {
         // 다중 시도로 안정적인 스크롤 복원 (back 네비게이션에서만)
         const attemptScrollRestore = (attemptCount = 0) => {
           const newUrl = normalizeUrl(window.location.pathname + window.location.search + window.location.hash);
           const savedPosition = getScrollPosition(newUrl);
-
-          console.log(
-            `🔙 Attempt ${attemptCount + 1}: Restoring scroll for URL:`,
-            newUrl,
-            'to position:',
-            savedPosition
-          );
 
           if (savedPosition > 0) {
             window.scrollTo(0, savedPosition);
@@ -161,10 +147,8 @@ export function NextRouterProvider({ children }: NextRouterProviderProps) {
             setTimeout(() => {
               const currentScroll = window.scrollY;
               if (Math.abs(currentScroll - savedPosition) > 10 && attemptCount < 3) {
-                console.log(`🔙 Scroll position not accurate (${currentScroll} vs ${savedPosition}), retrying...`);
                 attemptScrollRestore(attemptCount + 1);
               } else {
-                console.log('🔙 Scroll restoration completed successfully');
                 shouldRestoreScroll.current = false;
                 isBrowserNavigation.current = false;
                 isBackNavigation.current = false;
@@ -207,7 +191,6 @@ export function NextRouterProvider({ children }: NextRouterProviderProps) {
         if (positions[normalizedUrl] !== position) {
           positions[normalizedUrl] = position;
           sessionStorage.setItem(SCROLL_POSITIONS_KEY, JSON.stringify(positions));
-          console.log('💾 Saved scroll position:', position, 'for normalized URL:', normalizedUrl);
         }
       } catch (error) {
         console.warn('Failed to save scroll position:', error);
@@ -223,7 +206,7 @@ export function NextRouterProvider({ children }: NextRouterProviderProps) {
         const normalizedUrl = normalizeUrl(url);
         const positions = JSON.parse(sessionStorage.getItem(SCROLL_POSITIONS_KEY) || '{}');
         const position = positions[normalizedUrl] || 0;
-        console.log('📖 Retrieved scroll position:', position, 'for normalized URL:', normalizedUrl);
+
         return position;
       } catch (error) {
         console.warn('Failed to get scroll position:', error);
@@ -241,7 +224,6 @@ export function NextRouterProvider({ children }: NextRouterProviderProps) {
         const positions = JSON.parse(sessionStorage.getItem(SCROLL_POSITIONS_KEY) || '{}');
         delete positions[normalizedUrl];
         sessionStorage.setItem(SCROLL_POSITIONS_KEY, JSON.stringify(positions));
-        console.log('🗑️ Removed scroll position for URL:', normalizedUrl);
       } catch (error) {
         console.warn('Failed to remove scroll position:', error);
       }
@@ -260,10 +242,8 @@ export function NextRouterProvider({ children }: NextRouterProviderProps) {
       setTimeout(() => {
         const currentPosition = window.scrollY;
         if (Math.abs(currentPosition - targetPosition) > 5 && attempts < maxAttempts) {
-          console.log(`🔄 Scroll restore attempt ${attempts}: ${currentPosition} vs ${targetPosition}`);
           attemptRestore();
         } else {
-          console.log(`✅ Scroll restored successfully after ${attempts} attempts`);
           isRestoringScroll.current = false;
           isBackNavigation.current = false;
           pendingScrollPosition.current = null;
@@ -277,49 +257,30 @@ export function NextRouterProvider({ children }: NextRouterProviderProps) {
   // 새 페이지로 이동시 스크롤을 상단으로 (push/replace에서 사용)
   const scrollToTop = useCallback(() => {
     window.scrollTo(0, 0);
-    console.log('📄 Scrolled to top for new page');
   }, []);
 
   // 페이지 변경 시 스크롤 위치 저장 및 복원
   useEffect(() => {
     const handleRouteChangeStart = (url: string) => {
-      console.log('🚀 Route change start:', url);
-      console.log('🚀 isRestoringScroll:', isRestoringScroll.current);
-      console.log('🚀 isBrowserNavigation:', isBrowserNavigation.current);
-      console.log('🚀 isBackNavigation:', isBackNavigation.current);
-
       if (isBackNavigation.current || isRestoringScroll.current) {
         // back 네비게이션에서만 복원할 스크롤 위치 미리 준비
         const targetUrl = normalizeUrl(url);
         pendingScrollPosition.current = getScrollPosition(targetUrl);
-        console.log(
-          '🚀 Back navigation - prepared scroll position:',
-          pendingScrollPosition.current,
-          'for URL:',
-          targetUrl
-        );
       } else {
         // 일반 네비게이션에서 현재 스크롤 위치 저장
         const currentPosition = window.scrollY;
         saveScrollPosition(currentUrl.current, currentPosition);
         pendingScrollPosition.current = null;
-        console.log('🚀 Normal navigation - saved current scroll position:', currentPosition);
       }
     };
 
     const handleRouteChangeComplete = (url: string) => {
-      console.log('✅ Route change complete:', url);
-      console.log('✅ isRestoringScroll:', isRestoringScroll.current);
-      console.log('✅ isBackNavigation:', isBackNavigation.current);
-      console.log('✅ pendingScrollPosition:', pendingScrollPosition.current);
-
       if (
         (isRestoringScroll.current || isBackNavigation.current) &&
         !isBrowserNavigation.current &&
         pendingScrollPosition.current !== null
       ) {
         // router.back()으로 온 경우에만 스크롤 위치 복원
-        console.log('✅ Restoring scroll to position (router.back()):', pendingScrollPosition.current);
 
         // 강력한 스크롤 복원 사용
         requestAnimationFrame(() => {
@@ -343,12 +304,10 @@ export function NextRouterProvider({ children }: NextRouterProviderProps) {
           isBackNavigation.current = false;
           pendingScrollPosition.current = null;
         }
-        console.log('✅ Browser navigation - states managed by popstate');
       }
     };
 
     const handleRouteChangeError = () => {
-      console.log('❌ Route change error - resetting states');
       // 라우팅 에러 시 상태 초기화
       isRestoringScroll.current = false;
       isBrowserNavigation.current = false;
@@ -370,7 +329,6 @@ export function NextRouterProvider({ children }: NextRouterProviderProps) {
 
   // 확장된 back 함수
   const extendedBack = useCallback(() => {
-    console.log('📱 router.back() called');
     // 현재 스크롤 위치를 한번 더 저장
     const currentPosition = window.scrollY;
     saveScrollPosition(currentUrl.current, currentPosition);
@@ -383,7 +341,6 @@ export function NextRouterProvider({ children }: NextRouterProviderProps) {
 
   // 새로운 scrollResetBack 함수
   const scrollResetBack = useCallback(() => {
-    console.log('📱 router.scrollResetBack() called');
     isRestoringScroll.current = false;
     isBackNavigation.current = true; // 여전히 back 네비게이션
     isBrowserNavigation.current = false;
@@ -396,7 +353,6 @@ export function NextRouterProvider({ children }: NextRouterProviderProps) {
   // push와 replace 함수 래핑 (스크롤 복원 완전 비활성화)
   const extendedPush = useCallback(
     (url: any, as?: any, options?: any) => {
-      console.log('📱 router.push() called with:', url);
       // 현재 스크롤 위치를 한번 더 저장
       const currentPosition = window.scrollY;
       saveScrollPosition(currentUrl.current, currentPosition);
@@ -413,7 +369,6 @@ export function NextRouterProvider({ children }: NextRouterProviderProps) {
 
   const extendedReplace = useCallback(
     (url: any, as?: any, options?: any) => {
-      console.log('📱 router.replace() called with:', url);
       // 현재 스크롤 위치를 한번 더 저장
       const currentPosition = window.scrollY;
       saveScrollPosition(currentUrl.current, currentPosition);
