@@ -1,10 +1,8 @@
-export const useUid = ({ length = 10 }: { length?: number } = {}) => {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+import { useId, useRef } from 'react';
 
-  let result = '';
-
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length));
-  }
-  return result;
+export const useUid = ({ length = 10 }: { length?: number } = {}): string => {
+  const id = useId();
+  const counterRef = useRef(0);
+  counterRef.current += 1;
+  return `${id}-${counterRef.current}`;
 };

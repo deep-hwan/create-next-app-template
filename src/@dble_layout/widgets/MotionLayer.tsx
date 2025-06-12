@@ -82,12 +82,13 @@ const MotionLayer = memo(
         css: cssProp,
 
         // Motion-specific props
-        initialY = 8, // 초기 Y축 위치 오프셋 (px)
+        initialY = 15, // 초기 Y축 위치 오프셋 (px)
         initialX = 0, // 초기 X축 위치 오프셋 (px)
         initialOpacity = 0, // 초기 투명도 (0-1)
         delay = 0, // 애니메이션 시작 전 지연 시간 (초)
         duration = 0.5, // 애니메이션 지속 시간 (초)
         activeAnimation = true, // 애니메이션 활성화 여부 (뷰포트 진입 시 자동 애니메이션)
+        observer, // 외부 상태 관찰자 - 이 값이 변경될 때마다 애니메이션 다시 실행
         transitionType, // 애니메이션 타입 (spring, tween, inertia 등)
         stiffness, // 스프링 강성 - 값이 클수록 더 빠르게 움직임 (spring 타입)
         damping, // 스프링 감쇠 - 값이 클수록 빨리 정지함 (spring 타입)
@@ -156,6 +157,7 @@ const MotionLayer = memo(
 
       // 애니메이션 상태
       const [shouldAnimate, setShouldAnimate] = useState(false);
+      const [animationKey, setAnimationKey] = useState(0); // 애니메이션 강제 재시작용 키
 
       // Update animation state based on activeAnimation and isInViewStep1
       useEffect(() => {
@@ -168,7 +170,25 @@ const MotionLayer = memo(
         } else {
           setShouldAnimate(true);
         }
-      }, [activeAnimation, isInViewStep1, currentRef]);
+      }, [activeAnimation, isInViewStep1, currentRef, animationKey]); // animationKey 의존성 추가
+
+      // Observer 기능: 외부 상태 변경 시 애니메이션 다시 실행
+      useEffect(() => {
+        if (observer !== undefined && activeAnimation) {
+          // observer 값이 변경되면 애니메이션을 다시 실행
+          setShouldAnimate(false);
+
+          // 애니메이션 키를 변경하여 강제 재시작
+          setAnimationKey((prev) => prev + 1);
+
+          // 짧은 지연 후 애니메이션 다시 시작
+          const timer = setTimeout(() => {
+            setShouldAnimate(true);
+          }, 100); // 100ms로 지연 시간 증가
+
+          return () => clearTimeout(timer);
+        }
+      }, [observer, activeAnimation]);
 
       // Extended props styles function
       const ExtendedStyles = (props: MotionLayerType): SerializedStyles => {
@@ -411,6 +431,7 @@ const MotionLayer = memo(
 
       return (
         <MotionComponent
+          key={observer !== undefined ? `motion-${animationKey}` : undefined}
           ref={innerRef}
           className={combinedClassName}
           css={css([combinedStyles, cssProp])}

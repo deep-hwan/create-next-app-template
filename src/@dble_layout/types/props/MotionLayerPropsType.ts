@@ -1,15 +1,21 @@
-import { CSSObject } from '@emotion/react';
-import { HTMLMotionProps, PanInfo, TargetAndTransition, VariantLabels, Variants } from 'framer-motion';
-import { ElementType, ReactNode, RefObject } from 'react';
-import { BorderType } from '../piece/BorderType';
-import { CursorType } from '../piece/CursorType';
-import { LayoutElementType } from '../piece/LayoutElementType';
-import { MediaQueryType } from '../piece/MediaQueryType';
-import { ExcludedProps } from '../piece/PipeLinePropsType';
-import { PositionType } from '../piece/PositionType';
-import { ShadowType } from '../piece/ShadowType';
-import { TrafficType } from '../piece/TrafficType';
-import { TransitionType } from '../piece/TransitionType';
+import { CSSObject } from "@emotion/react";
+import {
+  HTMLMotionProps,
+  PanInfo,
+  TargetAndTransition,
+  VariantLabels,
+  Variants,
+} from "framer-motion";
+import { ElementType, ReactNode, RefObject } from "react";
+import { BorderType } from "../piece/BorderType";
+import { CursorType } from "../piece/CursorType";
+import { LayoutElementType } from "../piece/LayoutElementType";
+import { MediaQueryType } from "../piece/MediaQueryType";
+import { ExcludedProps } from "../piece/PipeLinePropsType";
+import { PositionType } from "../piece/PositionType";
+import { ShadowType } from "../piece/ShadowType";
+import { TrafficType } from "../piece/TrafficType";
+import { TransitionType } from "../piece/TransitionType";
 
 /**
  * MotionLayerType - 기본 동작 레이어 타입
@@ -27,7 +33,8 @@ import { TransitionType } from '../piece/TransitionType';
  * - whileInView: 요소가 뷰포트 내에 있을 때 적용할 애니메이션 상태를 정의합니다
  * - viewport: 뷰포트 관련 옵션을 정의합니다 (예: { once: true, margin: "100px" })
  */
-export interface MotionLayerType extends Omit<HTMLMotionProps<'div'>, ExcludedProps | 'initial'> {
+export interface MotionLayerType
+  extends Omit<HTMLMotionProps<"div">, ExcludedProps | "initial"> {
   w?: number | string;
   maxW?: number | string;
   minW?: number | string;
@@ -37,13 +44,19 @@ export interface MotionLayerType extends Omit<HTMLMotionProps<'div'>, ExcludedPr
 
   //flex
   flex?: string | number;
-  direc?: 'row' | 'row-reverse' | 'column' | 'column-reverse';
+  direc?: "row" | "row-reverse" | "column" | "column-reverse";
   isReverse?: boolean;
-  align?: 'start' | 'end' | 'center' | 'baseline' | 'stretch'; // align-items
-  justify?: 'start' | 'end' | 'center' | 'space-between' | 'space-around' | 'space-evenly'; // justify-content
+  align?: "start" | "end" | "center" | "baseline" | "stretch"; // align-items
+  justify?:
+    | "start"
+    | "end"
+    | "center"
+    | "space-between"
+    | "space-around"
+    | "space-evenly"; // justify-content
   gap?: string | number;
   order?: number;
-  wrap?: 'nowrap' | 'wrap' | 'wrap-reverse'; // flex-wrap
+  wrap?: "nowrap" | "wrap" | "wrap-reverse"; // flex-wrap
 
   // position
   position?: PositionType;
@@ -65,14 +78,15 @@ export interface MotionLayerType extends Omit<HTMLMotionProps<'div'>, ExcludedPr
   rotate?: string | number;
 }
 
-export interface MotionLayerPropsType<T extends ElementType = 'div'> extends Omit<MotionLayerType, ExcludedProps> {
+export interface MotionLayerPropsType<T extends ElementType = "div">
+  extends Omit<MotionLayerType, ExcludedProps> {
   as?: T;
   children: ReactNode;
   css?: CSSObject;
   zIndex?: number;
   transition?: TransitionType;
   cursor?: CursorType;
-  userSelect?: 'none' | 'auto' | 'text' | 'contain' | 'all';
+  userSelect?: "none" | "auto" | "text" | "contain" | "all";
   _mq?: MediaQueryType<MotionLayerType>;
   _hover?: Partial<MotionLayerType>;
   _focus?: Partial<MotionLayerType>;
@@ -81,6 +95,13 @@ export interface MotionLayerPropsType<T extends ElementType = 'div'> extends Omi
   // --- 모션 관련 속성 ---
 
   // 애니메이션 설정 속성
+
+  /**
+   * 외부 상태 관찰자
+   * 이 값이 변경될 때마다 애니메이션을 다시 실행합니다.
+   * 예: observer={category} - category 상태가 변경될 때마다 애니메이션 재실행
+   */
+  observer?: any;
 
   /**
    * 애니메이션 시작 시 Y축 초기 위치 (px 단위)
@@ -137,7 +158,7 @@ export interface MotionLayerPropsType<T extends ElementType = 'div'> extends Omi
    * 'inertia': 관성을 가진 감속 애니메이션
    * 'just': 즉시 값 변경
    */
-  transitionType?: 'tween' | 'spring' | 'inertia' | 'just';
+  transitionType?: "tween" | "spring" | "inertia" | "just";
 
   /**
    * 스프링 애니메이션의 강성도
@@ -252,7 +273,7 @@ export interface MotionLayerPropsType<T extends ElementType = 'div'> extends Omi
   viewport?: {
     once?: boolean;
     margin?: string;
-    amount?: 'some' | 'all' | number;
+    amount?: "some" | "all" | number;
     root?: RefObject<Element>;
   };
 
@@ -263,7 +284,7 @@ export interface MotionLayerPropsType<T extends ElementType = 'div'> extends Omi
    * 요소를 드래그할 수 있게 함
    * true: 모든 방향, "x": 수평 방향만, "y": 수직 방향만
    */
-  drag?: boolean | 'x' | 'y';
+  drag?: boolean | "x" | "y";
 
   /**
    * 드래그 제약 조건
@@ -304,19 +325,28 @@ export interface MotionLayerPropsType<T extends ElementType = 'div'> extends Omi
    * 드래그 시작 이벤트 리스너
    * 드래그가 시작될 때 호출될 함수
    */
-  onDragStart?: (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => void;
+  onDragStart?: (
+    event: MouseEvent | TouchEvent | PointerEvent,
+    info: PanInfo
+  ) => void;
 
   /**
    * 드래그 중 이벤트 리스너
    * 드래그 중에 호출될 함수
    */
-  onDrag?: (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => void;
+  onDrag?: (
+    event: MouseEvent | TouchEvent | PointerEvent,
+    info: PanInfo
+  ) => void;
 
   /**
    * 드래그 종료 이벤트 리스너
    * 드래그가 끝날 때 호출될 함수
    */
-  onDragEnd?: (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => void;
+  onDragEnd?: (
+    event: MouseEvent | TouchEvent | PointerEvent,
+    info: PanInfo
+  ) => void;
 
   // 레이아웃 애니메이션
 
@@ -325,7 +355,7 @@ export interface MotionLayerPropsType<T extends ElementType = 'div'> extends Omi
    * 요소의 크기나 위치가 변경될 때 자동으로 애니메이션 적용
    * true: 활성화, false: 비활성화, "position": 위치만, "size": 크기만
    */
-  layout?: boolean | 'position' | 'size';
+  layout?: boolean | "position" | "size";
 
   /**
    * 레이아웃 ID
@@ -334,4 +364,7 @@ export interface MotionLayerPropsType<T extends ElementType = 'div'> extends Omi
   layoutId?: string;
 }
 
-export type MotionLayerLayoutElement = Omit<MotionLayerPropsType<LayoutElementType>, ExcludedProps>;
+export type MotionLayerLayoutElement = Omit<
+  MotionLayerPropsType<LayoutElementType>,
+  ExcludedProps
+>;

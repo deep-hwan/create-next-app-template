@@ -87,41 +87,6 @@ const DragHorizontalLayer = ({
     }
   }, [preservePadding, children]);
 
-  // Apply momentum scrolling
-  useEffect(() => {
-    if (momentum !== 0 && !isDragging) {
-      let friction = 0.9; // Further reduced friction for faster deceleration
-      let currentMomentum = momentum;
-
-      const animateMomentum = () => {
-        if (Math.abs(currentMomentum) < 1.0 || !ref.current) {
-          // Higher threshold for earlier stopping
-          if (animationRef.current) {
-            cancelAnimationFrame(animationRef.current);
-            animationRef.current = null;
-          }
-          return;
-        }
-
-        currentMomentum *= friction;
-        if (ref.current) {
-          ref.current.scrollLeft -= currentMomentum;
-        }
-
-        animationRef.current = requestAnimationFrame(animateMomentum);
-      };
-
-      animationRef.current = requestAnimationFrame(animateMomentum);
-
-      return () => {
-        if (animationRef.current) {
-          cancelAnimationFrame(animationRef.current);
-          animationRef.current = null;
-        }
-      };
-    }
-  }, [momentum, isDragging]);
-
   const calculateMomentum = useCallback(() => {
     if (velocityTracker.current.length < 2) return 0;
 
@@ -144,9 +109,40 @@ const DragHorizontalLayer = ({
 
   const startDrag = useCallback(
     (e: MouseEvent<HTMLDivElement> | TouchEvent<HTMLDivElement>) => {
-      const targetTag = (e.target as HTMLElement).tagName.toLowerCase();
-      if (["input", "select", "textarea", "button", "a"].includes(targetTag)) {
-        return;
+      const target = e.target as HTMLElement;
+      const targetTag = target.tagName.toLowerCase();
+
+      // Check if target or any parent is a clickable element
+      const isClickableElement = (element: HTMLElement): boolean => {
+        const tag = element.tagName.toLowerCase();
+        const isClickable = [
+          "input",
+          "select",
+          "textarea",
+          "button",
+          "a",
+        ].includes(tag);
+        const hasClickHandler =
+          element.onclick !== null ||
+          element.getAttribute("role") === "button" ||
+          element.style.cursor === "pointer";
+        const hasInteractiveClass =
+          element.className.includes("touchable") ||
+          element.className.includes("clickable") ||
+          element.className.includes("button");
+
+        return isClickable || hasClickHandler || hasInteractiveClass;
+      };
+
+      // Check target and up to 3 parent elements
+      let currentElement: HTMLElement | null = target;
+      let depth = 0;
+      while (currentElement && depth < 3) {
+        if (isClickableElement(currentElement)) {
+          return; // Don't start drag on clickable elements
+        }
+        currentElement = currentElement.parentElement;
+        depth++;
       }
 
       const clientX = e.type.includes("touch")
@@ -169,6 +165,7 @@ const DragHorizontalLayer = ({
         animationRef.current = null;
       }
 
+      // Only prevent default if we're actually starting a drag
       if (e.cancelable) {
         e.preventDefault();
       }
@@ -203,7 +200,8 @@ const DragHorizontalLayer = ({
       setLastClientX(clientX);
       setLastTimestamp(currentTime);
 
-      if (e.cancelable) {
+      // Only prevent default if we're actively dragging and movement is significant
+      if (e.cancelable && Math.abs(dx) > 2) {
         e.preventDefault();
       }
     },
@@ -266,6 +264,106 @@ const DragHorizontalLayer = ({
     // Clear velocity tracker
     velocityTracker.current = [];
   }, [snap, isDragging, calculateMomentum]);
+
+  // Add event listeners with passive: false to prevent the passive event listener issue
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+
+    const handleTouchStart = (e: globalThis.TouchEvent) => {
+      // Check if the touch target is a clickable element before processing
+      const target = e.target as HTMLElement;
+      const isClickable =
+        target.tagName.toLowerCase() === "button" ||
+        target.getAttribute("role") === "button" ||
+        target.closest("button") ||
+        target.className.includes("touchable") ||
+        target.className.includes("clickable");
+
+      if (isClickable) {
+        return; // Don't interfere with clickable elements
+      }
+
+      const fakeEvent = {
+        ...e,
+        type: "touchstart",
+        target: e.target,
+        currentTarget: e.currentTarget,
+        preventDefault: () => e.preventDefault(),
+        cancelable: e.cancelable,
+        touches: e.touches,
+      } as any;
+      startDrag(fakeEvent);
+    };
+
+    const handleTouchMove = (e: globalThis.TouchEvent) => {
+      if (!isDragging) return;
+
+      const fakeEvent = {
+        ...e,
+        type: "touchmove",
+        target: e.target,
+        currentTarget: e.currentTarget,
+        preventDefault: () => e.preventDefault(),
+        cancelable: e.cancelable,
+        touches: e.touches,
+      } as any;
+      doDrag(fakeEvent);
+    };
+
+    const handleTouchEnd = (e: globalThis.TouchEvent) => {
+      if (!isDragging) return;
+      endDrag();
+    };
+
+    // Add touch event listeners with passive: false
+    element.addEventListener("touchstart", handleTouchStart, {
+      passive: false,
+    });
+    element.addEventListener("touchmove", handleTouchMove, { passive: false });
+    element.addEventListener("touchend", handleTouchEnd, { passive: false });
+
+    return () => {
+      element.removeEventListener("touchstart", handleTouchStart);
+      element.removeEventListener("touchmove", handleTouchMove);
+      element.removeEventListener("touchend", handleTouchEnd);
+    };
+  }, [startDrag, doDrag, endDrag, isDragging]);
+
+  // Apply momentum scrolling
+  useEffect(() => {
+    if (momentum !== 0 && !isDragging) {
+      let friction = 0.9; // Further reduced friction for faster deceleration
+      let currentMomentum = momentum;
+
+      const animateMomentum = () => {
+        if (Math.abs(currentMomentum) < 1.0 || !ref.current) {
+          // Higher threshold for earlier stopping
+          if (animationRef.current) {
+            cancelAnimationFrame(animationRef.current);
+            animationRef.current = null;
+          }
+          return;
+        }
+
+        currentMomentum *= friction;
+        if (ref.current) {
+          ref.current.scrollLeft -= currentMomentum;
+        }
+
+        animationRef.current = requestAnimationFrame(animateMomentum);
+      };
+
+      animationRef.current = requestAnimationFrame(animateMomentum);
+
+      return () => {
+        if (animationRef.current) {
+          cancelAnimationFrame(animationRef.current);
+          animationRef.current = null;
+        }
+      };
+    }
+  }, [momentum, isDragging]);
 
   return (
     <div

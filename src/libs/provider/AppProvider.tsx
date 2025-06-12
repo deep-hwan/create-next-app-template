@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { ConfirmProvider } from './ConfirmProvider';
 import { DialogProvider } from './DialogProvider';
 import { JengaProvider } from './JengaProvider';
+import { NextRouterProvider } from './router';
 
 //
 export default function AppProvider({ children }: { children: React.ReactNode }): JSX.Element {
@@ -11,19 +12,21 @@ export default function AppProvider({ children }: { children: React.ReactNode })
   const errPath = pathname === '/404';
 
   return (
-    <JengaProvider>
-      <ConfirmProvider>
-        <DialogProvider>
-          <div id='layout' css={{ ...styleSheet, minHeight: '100vh' }}>
-            {!errPath && <Appbar />}
+    <NextRouterProvider>
+      <JengaProvider>
+        <ConfirmProvider>
+          <DialogProvider>
+            <div id='layout' css={{ ...styleSheet, minHeight: '100vh' }}>
+              {!errPath && <Appbar />}
 
-            <main id='main_layer' css={styleSheet}>
-              {children}
-            </main>
-          </div>
-        </DialogProvider>
-      </ConfirmProvider>
-    </JengaProvider>
+              <main id='main_layer' css={styleSheet}>
+                {children}
+              </main>
+            </div>
+          </DialogProvider>
+        </ConfirmProvider>
+      </JengaProvider>
+    </NextRouterProvider>
   );
 }
 

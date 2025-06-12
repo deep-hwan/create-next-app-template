@@ -66,6 +66,7 @@ const Divider = React.forwardRef<HTMLDivElement, DividerPropsType>(
           marginBottom: getSpacing(props.spacing, "bottom"),
           marginLeft: getSpacing(props.spacing, "left"),
           marginRight: getSpacing(props.spacing, "right"),
+          userSelect: "none",
           ...Types({ w: props.w, h: props.h }),
         }),
       [Types, getSpacing]

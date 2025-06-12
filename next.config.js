@@ -25,6 +25,10 @@ const nextConfig = {
   // output: 'export',
   // images: { unoptimized: true },
 
+  onRecoverableError: (error, errorInfo) => {
+    console.warn('Recoverable error:', error, errorInfo);
+  },
+
   images: {
     // unoptimized: false,
     domains: ['imagedelivery.net', 'res.cloudinary.com'],
@@ -63,6 +67,10 @@ const nextConfig = {
 
   experimental: {
     scrollRestoration: false,
+  },
+
+  compiler: {
+    emotion: true,
   },
 };
 

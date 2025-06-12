@@ -28,6 +28,7 @@ const Spacing = React.forwardRef(function Spacing(
     return css({
       display: "flex",
       transition: "0.2s ease-in-out",
+      userSelect: "none",
       ...sizeTheme,
     });
   }, [direc, size]);

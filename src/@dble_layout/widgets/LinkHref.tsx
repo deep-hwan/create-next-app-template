@@ -159,10 +159,26 @@ const LinkHref = React.forwardRef<
     //
     // media-query styles
     const mediaStyles = useMemo(() => {
-      const stylesFunction = (styles: LinkHrefType) => {
-        return ExtendedStyles(styles);
-      };
-      return createMediaStyles(_mq, stylesFunction);
+      if (!_mq || Object.keys(_mq).length === 0) {
+        return css({});
+      }
+
+      const mediaStylesObject: { [key: string]: any } = {};
+
+      // Process each breakpoint in _mq
+      Object.entries(_mq).forEach(([breakpoint, styles]) => {
+        if (styles) {
+          // Extract the numeric value from breakpoint (e.g., 'w600' -> '600')
+          const breakpointValue = breakpoint.substring(1);
+          const mediaQuery = `@media (max-width: ${breakpointValue}px)`;
+
+          // Apply ExtendedStyles to the breakpoint styles
+          const breakpointStyles = ExtendedStyles(styles as LinkHrefType);
+          mediaStylesObject[mediaQuery] = breakpointStyles;
+        }
+      });
+
+      return css(mediaStylesObject);
     }, [_mq]);
 
     //
@@ -173,7 +189,7 @@ const LinkHref = React.forwardRef<
         ? ExtendedStyles({
             ..._focus,
             opacity: _focus?.opacity ?? 0.75,
-            scale: _focus?.scale ?? 0.1,
+            scale: _focus?.scale ?? 0.98,
           })
         : css({
             opacity: 0.75,
@@ -183,7 +199,7 @@ const LinkHref = React.forwardRef<
         ? ExtendedStyles({
             ..._active,
             opacity: _active?.opacity ?? 0.75,
-            scale: _active?.scale ?? 0.1,
+            scale: _active?.scale ?? 0.98,
           })
         : css({
             opacity: 0.75,
@@ -335,32 +351,5 @@ const LinkHref = React.forwardRef<
 );
 
 LinkHref.displayName = "LinkHref";
-
-// Helper function for createMediaStyles (copied from TouchableOpacity implementation)
-const createMediaStyles = (
-  mediaQueries: any,
-  stylesFunction: (styles: any) => any
-) => {
-  if (!mediaQueries || Object.keys(mediaQueries).length === 0) {
-    return css({});
-  }
-
-  let mediaStyles = "";
-
-  Object.entries(mediaQueries).forEach(([breakpoint, styles]) => {
-    const mediaQuery = `@media (min-width: ${breakpoint}px)`;
-    const styleCSS = stylesFunction(styles);
-
-    mediaStyles += `
-      ${mediaQuery} {
-        ${styleCSS}
-      }
-    `;
-  });
-
-  return css`
-    ${mediaStyles}
-  `;
-};
 
 export default LinkHref;

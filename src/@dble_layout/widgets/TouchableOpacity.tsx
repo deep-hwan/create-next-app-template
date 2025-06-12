@@ -121,6 +121,14 @@ const TouchableOpacity = React.forwardRef<
         ...borderStylesProps(props.border ?? {}),
         ...shadowStylesProps(props.shadow),
         ...transformStylesProps({ scale: props.scale }),
+
+        // Ensure txtColor has proper specificity
+        ...(props.txtColor && {
+          color: `${props.txtColor} !important`,
+          "& *": {
+            color: `inherit !important`,
+          },
+        }),
       };
 
       return css(styles as CSSObject);
@@ -145,9 +153,14 @@ const TouchableOpacity = React.forwardRef<
             ? {
                 "div, h1, h2, h3, h4, h5, h6, p, a, li, ul, span, b": {
                   userSelect: "none",
+                  // Don't override color here, let txtColor prop take precedence
                 },
               }
             : {}),
+          // Ensure button/link styling doesn't override txtColor
+          "&, & *": {
+            ...(txtColor && { color: txtColor }),
+          },
         }),
       [
         cursor,
@@ -157,6 +170,7 @@ const TouchableOpacity = React.forwardRef<
         transition,
         zIndex,
         userSelect,
+        txtColor,
       ]
     );
 
@@ -177,7 +191,7 @@ const TouchableOpacity = React.forwardRef<
         ? ExtendedStyles({
             ..._focus,
             opacity: _focus?.opacity ?? 0.75,
-            scale: _focus?.scale ?? 0.1,
+            scale: _focus?.scale ?? 0.98,
           })
         : css({
             opacity: 0.75,
@@ -187,7 +201,7 @@ const TouchableOpacity = React.forwardRef<
         ? ExtendedStyles({
             ..._active,
             opacity: _active?.opacity ?? 0.75,
-            scale: _active?.scale ?? 0.1,
+            scale: _active?.scale ?? 0.98,
           })
         : css({
             opacity: 0.75,
@@ -253,7 +267,7 @@ const TouchableOpacity = React.forwardRef<
         ...pPs,
         direc: pPs.direc ?? "row",
         txtSize: pPs.txtSize ?? 15,
-        txtColor: pPs.txtColor ?? "#5b94f0",
+        txtColor: pPs.txtColor,
         whiteSpace: pPs.whiteSpace ?? "nowrap",
       };
 

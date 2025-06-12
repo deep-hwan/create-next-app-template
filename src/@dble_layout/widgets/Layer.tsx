@@ -274,12 +274,49 @@ const Layer = React.forwardRef<
     wrap,
   ]);
 
-  // Process cssProp to handle media queries properly
+  // Process cssProp to handle media queries properly and prevent falsy value errors
   const processedCssProp = useMemo(() => {
+    // Return undefined if cssProp is falsy or invalid
     if (!cssProp) return undefined;
 
-    // Create a new CSS string that safely handles any dynamic media query keys
-    return css(cssProp);
+    try {
+      // Check if cssProp is a valid object or function
+      if (typeof cssProp === "object" && cssProp !== null) {
+        // Filter out falsy keys from the object
+        const filteredCssProp = Object.fromEntries(
+          Object.entries(cssProp).filter(([key, value]) => {
+            // Keep the entry if key is truthy and value is not undefined
+            return key && value !== undefined;
+          })
+        );
+
+        // Only return css if there are valid entries
+        return Object.keys(filteredCssProp).length > 0
+          ? css(filteredCssProp)
+          : undefined;
+      } else if (typeof cssProp === "function") {
+        // If it's a function (SerializedStyles), use it directly
+        return cssProp;
+      } else if (typeof cssProp === "string") {
+        // If it's a string, wrap it in css
+        return css`
+          ${cssProp}
+        `;
+      }
+
+      // For any other type, try to use it directly but safely
+      return css(cssProp);
+    } catch (error) {
+      // Log the error in development but don't break the component
+      if (process.env.NODE_ENV === "development") {
+        console.warn(
+          "Invalid CSS prop passed to Layer component:",
+          cssProp,
+          error
+        );
+      }
+      return undefined;
+    }
   }, [cssProp]);
 
   const combinedClassName = cx(`dble-layer${as ? `-${as}` : ""}`, className);

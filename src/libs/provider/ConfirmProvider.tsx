@@ -1,22 +1,8 @@
 /** @jsxImportSource @emotion/react */
-"use client";
+'use client';
 
-import {
-  CSSObject,
-  Interpolation,
-  Theme,
-  css,
-  keyframes,
-} from "@emotion/react";
-import React, {
-  ReactNode,
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { CSSObject, Interpolation, Theme, css, keyframes } from '@emotion/react';
+import React, { ReactNode, createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 // ============================================================================
 // 타입 정의
@@ -26,7 +12,7 @@ import React, {
  * 확인창 설정을 위한 인터페이스
  */
 interface ConfirmOptions {
-  type?: "primary" | "success" | "failed";
+  type?: 'primary' | 'success' | 'failed';
   title?: string;
   message?: string;
   onConfirm?: () => void;
@@ -44,7 +30,7 @@ interface ConfirmContextType {
  * BottomConfirmBox 컴포넌트 Props
  */
 interface ConfirmBoxProps {
-  type: "primary" | "success" | "failed";
+  type: 'primary' | 'success' | 'failed';
   open: boolean;
   title: string;
   message: string;
@@ -62,7 +48,7 @@ interface CheckIconProps {
   className?: string;
   backgroundColor?: string;
   duration?: number;
-  type?: "success" | "failed";
+  type?: 'success' | 'failed';
 }
 
 /**
@@ -188,12 +174,12 @@ const shakeAnimation = keyframes`
  * 공통 Flex 스타일
  */
 const flexT: Interpolation<Theme> = {
-  width: "100%",
-  position: "relative",
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  transition: "0.2s ease-in-out",
+  width: '100%',
+  position: 'relative',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  transition: '0.2s ease-in-out',
 };
 
 // ============================================================================
@@ -209,12 +195,12 @@ const ConfirmContext = createContext<ConfirmContextType | null>(null);
 const ConfirmTitle: React.FC<ConfirmTitleProps> = ({ title, message }) => {
   // 공통 스타일
   const initialStyle: CSSObject = {
-    whiteSpace: "pre-line",
-    textAlign: "center",
-    userSelect: "none",
-    wordBreak: "break-all",
-    wordWrap: "break-word",
-    overflowWrap: "break-word",
+    whiteSpace: 'pre-line',
+    textAlign: 'center',
+    userSelect: 'none',
+    wordBreak: 'break-all',
+    wordWrap: 'break-word',
+    overflowWrap: 'break-word',
   };
 
   return (
@@ -222,8 +208,8 @@ const ConfirmTitle: React.FC<ConfirmTitleProps> = ({ title, message }) => {
       {/* 제목 */}
       <b
         css={{
-          fontSize: "1rem",
-          color: "#5e5f69",
+          fontSize: '1rem',
+          color: '#5e5f69',
           ...initialStyle,
         }}
       >
@@ -236,8 +222,8 @@ const ConfirmTitle: React.FC<ConfirmTitleProps> = ({ title, message }) => {
       {/* 메시지 */}
       <p
         css={{
-          fontSize: "0.875rem",
-          color: "#87888a",
+          fontSize: '0.875rem',
+          color: '#87888a',
           ...initialStyle,
         }}
       >
@@ -257,20 +243,19 @@ const CheckAnimateIcon: React.FC<CheckIconProps> = ({
   className,
   backgroundColor,
   duration = 0.7,
-  type = "success",
+  type = 'success',
 }) => {
   // 타입에 따른 색상 및 배경색 설정
-  const iconColor = color || (type === "success" ? "#4CAF50" : "#FF5252");
-  const bgColor =
-    backgroundColor || (type === "success" ? "#7fd5a1" : "#ffcdd2");
+  const iconColor = color || (type === 'success' ? '#4CAF50' : '#FF5252');
+  const bgColor = backgroundColor || (type === 'success' ? '#7fd5a1' : '#ffcdd2');
 
   return (
     <svg
       width={size}
       height={size}
-      viewBox="0 0 48 48"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
+      viewBox='0 0 48 48'
+      fill='none'
+      xmlns='http://www.w3.org/2000/svg'
       className={className}
       css={css`
         /* 배경 애니메이션 */
@@ -284,8 +269,7 @@ const CheckAnimateIcon: React.FC<CheckIconProps> = ({
           stroke-dasharray: 283;
           stroke-dashoffset: 283;
           transform-origin: center;
-          animation: ${drawCircle} ${duration}s cubic-bezier(0.65, 0, 0.35, 1)
-            forwards;
+          animation: ${drawCircle} ${duration}s cubic-bezier(0.65, 0, 0.35, 1) forwards;
         }
         /* 체크표시 애니메이션 */
         .check {
@@ -309,61 +293,60 @@ const CheckAnimateIcon: React.FC<CheckIconProps> = ({
         }
         /* 아이콘 펄스 효과 */
         .icon-container {
-          animation: ${pulse} ${duration * 0.5}s cubic-bezier(0.65, 0, 0.35, 1)
-            forwards;
+          animation: ${pulse} ${duration * 0.5}s cubic-bezier(0.65, 0, 0.35, 1) forwards;
           animation-delay: ${duration * 1.3}s;
           transform-origin: center;
         }
       `}
     >
-      <g className="icon-container">
+      <g className='icon-container'>
         {/* 배경 원 */}
-        <circle className="background" cx="24" cy="24" r="22" fill={bgColor} />
+        <circle className='background' cx='24' cy='24' r='22' fill={bgColor} />
 
         {/* 테두리 원 */}
         <circle
-          className="circle"
-          cx="24"
-          cy="24"
-          r="20"
+          className='circle'
+          cx='24'
+          cy='24'
+          r='20'
           stroke={iconColor}
           strokeWidth={strokeWidth}
-          fill="none"
-          strokeLinecap="round"
+          fill='none'
+          strokeLinecap='round'
         />
 
         {/* 성공 또는 실패 아이콘 */}
-        {type === "success" ? (
+        {type === 'success' ? (
           // 체크 표시
           <path
-            className="check"
-            d="M16 24L22 30L34 18"
+            className='check'
+            d='M16 24L22 30L34 18'
             stroke={iconColor}
             strokeWidth={strokeWidth}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            fill="none"
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            fill='none'
           />
         ) : (
           // X 표시
           <>
             <path
-              className="x-line1"
-              d="M16 16L32 32"
+              className='x-line1'
+              d='M16 16L32 32'
               stroke={iconColor}
               strokeWidth={strokeWidth}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              fill="none"
+              strokeLinecap='round'
+              strokeLinejoin='round'
+              fill='none'
             />
             <path
-              className="x-line2"
-              d="M32 16L16 32"
+              className='x-line2'
+              d='M32 16L16 32'
               stroke={iconColor}
               strokeWidth={strokeWidth}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              fill="none"
+              strokeLinecap='round'
+              strokeLinejoin='round'
+              fill='none'
             />
           </>
         )}
@@ -385,13 +368,13 @@ const Fixed: React.FC<FixedProps> = ({ children, open }) => {
     <div
       css={{
         ...flexT,
-        overscrollBehavior: "contain",
-        position: "fixed",
+        overscrollBehavior: 'contain',
+        position: 'fixed',
         bottom: 0,
         left: 0,
         right: 0,
         opacity: open ? 1 : 0,
-        zIndex: 100000000,
+        zIndex: 1000000000,
         paddingBottom: bottom,
         paddingLeft: left,
         paddingRight: right,
@@ -405,14 +388,7 @@ const Fixed: React.FC<FixedProps> = ({ children, open }) => {
 /**
  * 하단 확인 대화상자 컴포넌트
  */
-const BottomConfirmBox: React.FC<ConfirmBoxProps> = ({
-  type,
-  open,
-  title,
-  message,
-  onConfirm,
-  onClose,
-}) => {
+const BottomConfirmBox: React.FC<ConfirmBoxProps> = ({ type, open, title, message, onConfirm, onClose }) => {
   const ref = useRef<HTMLDivElement>(null);
 
   // 상태 관리
@@ -432,7 +408,7 @@ const BottomConfirmBox: React.FC<ConfirmBoxProps> = ({
 
   // Failed 타입일 때 흔들림 애니메이션 처리
   useEffect(() => {
-    if (delayedOpen && type === "failed") {
+    if (delayedOpen && type === 'failed') {
       const animationTimeout = setTimeout(() => {
         setShowShake(true);
 
@@ -456,7 +432,7 @@ const BottomConfirmBox: React.FC<ConfirmBoxProps> = ({
 
   // Success 타입일 때 자동 닫힘 처리
   useEffect(() => {
-    if (delayedOpen && type === "success") {
+    if (delayedOpen && type === 'success') {
       setIsAutoClosing(true);
 
       const autoCloseTimeout = setTimeout(() => {
@@ -472,14 +448,14 @@ const BottomConfirmBox: React.FC<ConfirmBoxProps> = ({
   }, [delayedOpen, type]);
 
   // 모달 외부 클릭 핸들러
-  const clickOutSideClose = !isAutoClosing && type !== "failed";
+  const clickOutSideClose = !isAutoClosing && type !== 'failed';
   const clickModalOutside = useCallback(
     (event: MouseEvent) => {
       if (
         clickOutSideClose &&
         open &&
         ref &&
-        "current" in ref &&
+        'current' in ref &&
         ref.current &&
         !ref.current.contains(event.target as Node)
       ) {
@@ -490,9 +466,9 @@ const BottomConfirmBox: React.FC<ConfirmBoxProps> = ({
   );
 
   useEffect(() => {
-    document.addEventListener("mousedown", clickModalOutside);
+    document.addEventListener('mousedown', clickModalOutside);
     return () => {
-      document.removeEventListener("mousedown", clickModalOutside);
+      document.removeEventListener('mousedown', clickModalOutside);
     };
   }, [clickModalOutside]);
 
@@ -504,64 +480,54 @@ const BottomConfirmBox: React.FC<ConfirmBoxProps> = ({
             ref={ref}
             css={{
               ...flexT,
-              height: "auto",
-              maxWidth: type === "success" ? 86 : 340,
-              minWidth: type === "success" ? 86 : 320,
+              height: 'auto',
+              maxWidth: type === 'success' ? 86 : 340,
+              minWidth: type === 'success' ? 86 : 320,
               padding: 18,
               borderRadius: 24,
-              overscrollBehavior: "contain",
-              backgroundColor: "#fafafa",
-              border: "1px solid #e2e2e2",
-              boxShadow: `0 0 16px 0 ${
-                type === "failed"
-                  ? "rgba(255, 0, 0, 0.12)"
-                  : "rgba(66, 102, 193, 0.16)"
-              }`,
-              transition: "0.2s ease-in-out",
-              animation: showShake
-                ? `${shakeAnimation} 0.5s cubic-bezier(.36,.07,.19,.97) both`
-                : "none",
-              animationIterationCount: "1",
+              overscrollBehavior: 'contain',
+              backgroundColor: '#fafafa',
+              border: '1px solid #e2e2e2',
+              boxShadow: `0 0 16px 0 ${type === 'failed' ? 'rgba(255, 0, 0, 0.12)' : 'rgba(66, 102, 193, 0.16)'}`,
+              transition: '0.2s ease-in-out',
+              animation: showShake ? `${shakeAnimation} 0.5s cubic-bezier(.36,.07,.19,.97) both` : 'none',
+              animationIterationCount: '1',
             }}
           >
             <div css={flexT}>
               {/* 성공 타입 UI */}
-              {type === "success" && <CheckAnimateIcon />}
+              {type === 'success' && <CheckAnimateIcon />}
 
               {/* 기본 타입 UI */}
-              {type === "primary" && (
+              {type === 'primary' && (
                 <>
                   <ConfirmTitle title={title} message={message} />
                   <div css={{ minHeight: 10 }} />
-                  <button
-                    type="button"
-                    onClick={onConfirm}
-                    css={{ padding: 5, cursor: "pointer", outline: "none" }}
-                  >
+                  <button type='button' onClick={onConfirm} css={{ padding: 5, cursor: 'pointer', outline: 'none' }}>
                     <CheckAnimateIcon duration={0} size={28} />
                   </button>
                 </>
               )}
 
               {/* 실패 타입 UI */}
-              {type === "failed" && (
+              {type === 'failed' && (
                 <>
-                  <CheckAnimateIcon size={32} type="failed" />
+                  <CheckAnimateIcon size={32} type='failed' />
                   <div css={{ minHeight: 15 }} />
                   <ConfirmTitle title={title} message={message} />
                   <div css={{ minHeight: 20 }} />
                   <button
-                    type="button"
+                    type='button'
                     onClick={onClose}
                     css={{
-                      userSelect: "none",
-                      padding: "5px 14px",
-                      cursor: "pointer",
-                      outline: "none",
-                      backgroundColor: "#f0f0f0",
-                      border: "1px solid #e2e2e2",
-                      fontSize: "0.875rem",
-                      color: "#89888a",
+                      userSelect: 'none',
+                      padding: '5px 14px',
+                      cursor: 'pointer',
+                      outline: 'none',
+                      backgroundColor: '#f0f0f0',
+                      border: '1px solid #e2e2e2',
+                      fontSize: '0.875rem',
+                      color: '#89888a',
                       borderRadius: 100,
                     }}
                   >
@@ -580,38 +546,30 @@ const BottomConfirmBox: React.FC<ConfirmBoxProps> = ({
 /**
  * 확인창 Provider 컴포넌트
  */
-export const ConfirmProvider: React.FC<{ children: ReactNode }> = ({
-  children,
-}) => {
+export const ConfirmProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   // 상태 관리
   const [isOpen, setIsOpen] = useState(false);
-  const [type, setType] = useState<"primary" | "success" | "failed">("primary");
-  const [title, setTitle] = useState("");
-  const [message, setMessage] = useState("");
+  const [type, setType] = useState<'primary' | 'success' | 'failed'>('primary');
+  const [title, setTitle] = useState('');
+  const [message, setMessage] = useState('');
   const [callback, setCallback] = useState<(() => void) | undefined>(undefined);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   // 모달 열기 함수
-  const onConfirm = ({
-    type = "primary",
-    title,
-    message,
-    onConfirm,
-  }: ConfirmOptions) => {
+  const onConfirm = ({ type = 'primary', title, message, onConfirm }: ConfirmOptions) => {
     // 타입별 기본값 설정
-    let modalTitle = "";
-    let modalMessage = "";
+    let modalTitle = '';
+    let modalMessage = '';
 
-    if (type === "primary") {
-      modalTitle = title || "아래 버튼을 클릭하세요";
-      modalMessage =
-        message || "취소 및 닫기는 외부를 클릭하면 모달이 사라져요";
-    } else if (type === "failed") {
-      modalTitle = title || "요청에 실패했어요";
-      modalMessage = message || "확인 후 다시 한번 시도해주세요";
-    } else if (type === "success") {
-      modalTitle = title || "성공했습니다!";
-      modalMessage = message || "";
+    if (type === 'primary') {
+      modalTitle = title || '아래 버튼을 클릭하세요';
+      modalMessage = message || '취소 및 닫기는 외부를 클릭하면 모달이 사라져요';
+    } else if (type === 'failed') {
+      modalTitle = title || '요청에 실패했어요';
+      modalMessage = message || '확인 후 다시 한번 시도해주세요';
+    } else if (type === 'success') {
+      modalTitle = title || '성공했습니다!';
+      modalMessage = message || '';
     }
 
     // 애니메이션 처리 로직
@@ -650,7 +608,7 @@ export const ConfirmProvider: React.FC<{ children: ReactNode }> = ({
 
   // 확인 버튼 핸들러
   const handleConfirm = () => {
-    if (type === "primary") {
+    if (type === 'primary') {
       // Primary 타입일 때는 확인 후 모달 닫기
       setIsOpen(false);
     }
@@ -680,7 +638,7 @@ export const ConfirmProvider: React.FC<{ children: ReactNode }> = ({
 export const useConfirm = () => {
   const context = useContext(ConfirmContext);
   if (!context) {
-    throw new Error("useConfirm must be used within a ConfirmProvider");
+    throw new Error('useConfirm must be used within a ConfirmProvider');
   }
   return context;
 };
